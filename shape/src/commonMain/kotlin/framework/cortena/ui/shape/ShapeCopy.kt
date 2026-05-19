@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.shape
 
 import androidx.compose.runtime.Immutable
@@ -11,20 +15,33 @@ import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.util.fastCoerceIn
 import framework.cortena.ui.shape.internal.shapeOutline
 
+/**
+ * Return a uniform [RoundedShape] using this shape's [CornerStyle] (or [CornerStyle.Continuous]).
+ */
 @Stable
-fun ComponentShape.copy(
+public fun ComponentShape.copy(
     cornerRadius: Dp,
     style: CornerStyle = this.style ?: CornerStyle.Continuous,
-) = RoundedShape(cornerRadius = cornerRadius, style = style)
+): RoundedShape = RoundedShape(cornerRadius = cornerRadius, style = style)
 
+/**
+ * Return a per-corner [UnevenShape] using this shape's [CornerStyle] (or [CornerStyle.Continuous]).
+ */
 @Stable
-fun ComponentShape.copy(
+public fun ComponentShape.copy(
     cornerRadii: CornerRadii,
     style: CornerStyle = this.style ?: CornerStyle.Continuous,
-) = UnevenShape(cornerRadii = cornerRadii, style = style)
+): UnevenShape = UnevenShape(cornerRadii = cornerRadii, style = style)
 
+/**
+ * Override individual corner radii on top of an existing shape.
+ *
+ * Unspecified [Dp] arguments inherit the corresponding corner radius from this shape, so callers
+ * can selectively change a subset of corners without re-stating the others. The result preserves
+ * layout-direction handling because radii are interpreted in start/end semantics.
+ */
 @Stable
-fun ComponentShape.copy(
+public fun ComponentShape.copy(
     topStart: Dp = Dp.Unspecified,
     topEnd: Dp = Dp.Unspecified,
     bottomEnd: Dp = Dp.Unspecified,
@@ -108,7 +125,7 @@ private data class CopyRoundedRectangle(
         )
     }
 
-    override fun copy(style: CornerStyle) =
+    override fun copy(style: CornerStyle): ComponentShape =
         CopyRoundedRectangle(
             shape = shape,
             topStart = topStart,

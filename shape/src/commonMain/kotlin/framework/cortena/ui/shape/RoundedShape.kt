@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.shape
 
 import androidx.compose.runtime.Immutable
@@ -9,9 +13,17 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.fastCoerceIn
 import framework.cortena.ui.shape.internal.shapeOutline
 
+/**
+ * Rounded rectangle with the same [cornerRadius] applied to every corner.
+ *
+ * The radius is clamped to half the shorter edge so the shape gracefully degrades into a capsule
+ * when the requested radius is larger than the rectangle can accommodate.
+ */
 @Immutable
-class RoundedShape(val cornerRadius: Dp, override val style: CornerStyle = CornerStyle.Continuous) :
-    ComponentShape {
+public class RoundedShape(
+    public val cornerRadius: Dp,
+    override val style: CornerStyle = CornerStyle.Continuous,
+) : ComponentShape {
 
     override fun corners(
         size: Size,
@@ -38,18 +50,19 @@ class RoundedShape(val cornerRadius: Dp, override val style: CornerStyle = Corne
         return shapeOutline(size = size, radius = radius, style = style)
     }
 
-    override fun copy(style: CornerStyle) = RoundedShape(cornerRadius = cornerRadius, style = style)
-
-    fun copy(cornerRadius: Dp = this.cornerRadius, style: CornerStyle = this.style) =
+    override fun copy(style: CornerStyle): RoundedShape =
         RoundedShape(cornerRadius = cornerRadius, style = style)
+
+    public fun copy(
+        cornerRadius: Dp = this.cornerRadius,
+        style: CornerStyle = this.style,
+    ): RoundedShape = RoundedShape(cornerRadius = cornerRadius, style = style)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RoundedShape) return false
-
         if (cornerRadius != other.cornerRadius) return false
         if (style != other.style) return false
-
         return true
     }
 
@@ -59,7 +72,5 @@ class RoundedShape(val cornerRadius: Dp, override val style: CornerStyle = Corne
         return result
     }
 
-    override fun toString(): String {
-        return "RoundedShape(cornerRadius=$cornerRadius, style=$style)"
-    }
+    override fun toString(): String = "RoundedShape(cornerRadius=$cornerRadius, style=$style)"
 }

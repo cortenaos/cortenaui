@@ -28,6 +28,10 @@ rootProject.name = "cortenaui"
 // Foundation: pure Kotlin token layer, zero framework dependency
 include(":foundation")
 
+// Shape: Compose shape system, depends on :foundation. Publishable as a standalone AAR
+// so non-CortenaUI Compose consumers can use ComponentShape without pulling :compose.
+include(":shape")
+
 // Compose: Compose wrappers + theme layer
 include(":compose")
 

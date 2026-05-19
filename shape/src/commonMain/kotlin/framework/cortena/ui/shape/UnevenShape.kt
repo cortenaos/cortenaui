@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.shape
 
 import androidx.compose.runtime.Immutable
@@ -10,13 +14,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastCoerceIn
 import framework.cortena.ui.shape.internal.shapeOutline
 
+/**
+ * Rectangle with independent radii for each corner, expressed in start/end semantics so the shape
+ * automatically mirrors under right-to-left layout.
+ */
 @Immutable
-class UnevenShape(
-    val cornerRadii: CornerRadii,
+public class UnevenShape(
+    public val cornerRadii: CornerRadii,
     override val style: CornerStyle = CornerStyle.Continuous,
 ) : ComponentShape {
 
-    constructor(
+    public constructor(
         topStart: Dp = 0f.dp,
         topEnd: Dp = 0f.dp,
         bottomEnd: Dp = 0f.dp,
@@ -89,14 +97,15 @@ class UnevenShape(
         )
     }
 
-    override fun copy(style: CornerStyle) = UnevenShape(cornerRadii = cornerRadii, style = style)
+    override fun copy(style: CornerStyle): UnevenShape =
+        UnevenShape(cornerRadii = cornerRadii, style = style)
 
-    fun copy(
+    public fun copy(
         cornerRadii: CornerRadii = this.cornerRadii,
         style: CornerStyle = this.style,
     ): UnevenShape = UnevenShape(cornerRadii = cornerRadii, style = style)
 
-    fun copy(
+    public fun copy(
         topStart: Dp = cornerRadii.topStart,
         topEnd: Dp = cornerRadii.topEnd,
         bottomEnd: Dp = cornerRadii.bottomEnd,
@@ -114,10 +123,8 @@ class UnevenShape(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is UnevenShape) return false
-
         if (cornerRadii != other.cornerRadii) return false
         if (style != other.style) return false
-
         return true
     }
 
@@ -127,7 +134,5 @@ class UnevenShape(
         return result
     }
 
-    override fun toString(): String {
-        return "UnevenShape(cornerRadii=$cornerRadii, style=$style)"
-    }
+    override fun toString(): String = "UnevenShape(cornerRadii=$cornerRadii, style=$style)"
 }

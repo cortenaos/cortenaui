@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.shape
 
 import androidx.compose.runtime.Immutable
@@ -11,23 +15,35 @@ import androidx.compose.ui.util.fastCoerceIn
 import androidx.compose.ui.util.lerp
 import framework.cortena.ui.shape.internal.shapeOutline
 
+/**
+ * Linearly interpolate between [start] and [stop] shapes, forcing the result to render with the
+ * given [style].
+ *
+ * Use this overload when the lerp is being driven by a transition between shapes that share a
+ * single visual style (for example, animating only the corner radii).
+ */
 @Stable
-fun lerp(
+public fun lerp(
     start: ComponentShape,
     stop: ComponentShape,
     fraction: Float,
     style: CornerStyle,
-): ComponentShape {
-    return when (fraction) {
+): ComponentShape =
+    when (fraction) {
         0f -> start
         1f -> stop
         else -> LerpRoundedRectangle(start, stop, fraction, style)
     }
-}
 
+/**
+ * Linearly interpolate between [start] and [stop] shapes.
+ *
+ * If the two shapes have different [CornerStyle]s, the result hard-switches at fraction `0.5`. Pass
+ * an explicit `style` argument when smoother behavior is required.
+ */
 @Stable
-fun lerp(start: ComponentShape, stop: ComponentShape, fraction: Float): ComponentShape {
-    return when (fraction) {
+public fun lerp(start: ComponentShape, stop: ComponentShape, fraction: Float): ComponentShape =
+    when (fraction) {
         0f -> start
         1f -> stop
         else -> {
@@ -37,6 +53,7 @@ fun lerp(start: ComponentShape, stop: ComponentShape, fraction: Float): Componen
                 when {
                     startStyle != null && stopStyle != null ->
                         if (fraction < 0.5f) startStyle else stopStyle
+
                     startStyle != null -> startStyle
                     stopStyle != null -> stopStyle
                     else -> null
@@ -44,7 +61,6 @@ fun lerp(start: ComponentShape, stop: ComponentShape, fraction: Float): Componen
             LerpRoundedRectangle(start, stop, fraction, style)
         }
     }
-}
 
 @Immutable
 private data class LerpRoundedRectangle(
@@ -109,6 +125,6 @@ private data class LerpRoundedRectangle(
         }
     }
 
-    override fun copy(style: CornerStyle) =
+    override fun copy(style: CornerStyle): ComponentShape =
         LerpRoundedRectangle(start = start, stop = stop, fraction = fraction, style = style)
 }

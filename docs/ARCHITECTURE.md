@@ -5,13 +5,17 @@
 ```mermaid
 graph TD
     catalog["`:catalog`"] --> compose["`:compose`"]
-    catalog --> foundation["`:foundation`"]
+    compose --> shape["`:shape`"]
     compose --> foundation["`:foundation`"]
+    shape --> foundation
 ```
 
-`:catalog` depends on `:compose` (and transitively on `:foundation`).
-`:compose` depends on `:foundation`.
-`:foundation` has zero external dependencies.
+`:catalog` depends on `:compose` (and transitively `:shape` and `:foundation`).
+`:compose` depends on `:shape` and `:foundation`. Both are exposed via `api(...)` so consumers do
+not need a separate dependency on either.
+`:shape` depends on `:foundation` and on `compose.runtime` + `compose.ui`. It can be consumed
+standalone by Compose-based apps that only need the shape system.
+`:foundation` has zero external dependencies — pure Kotlin.
 
 ## Modules
 
@@ -19,28 +23,66 @@ graph TD
 
 **Zero external dependencies. Pure Kotlin.**
 
-The single source of truth for all design tokens. Framework-agnostic by design:
-values are primitive types (`Long` for colors, `Float` for sizes) so this module
-can be consumed by Compose, the Android View system, and AOSP build system
-(`Android.bp`) without modification.
+The single source of truth for all design tokens **and** for framework-agnostic shape geometry.
+Values are primitive types (`Long` for colors, `Float` for sizes), and shape geometry is emitted
+through a `CornerPathReceiver` SAM interface so this module can be consumed by Compose, the
+Android View system, and AOSP build system (`Android.bp`) without modification.
 
 ```
 foundation/src/commonMain/kotlin/framework/cortena/ui/
 ├── color/
-│   ├── ColorTokens.kt      # raw ARGB Long values (internal)
-│   ├── AdaptiveColor.kt    # light + dark color pair
-│   ├── ColorToken.kt       # public adaptive color palette
-│   └── Palette.kt          # semantic roles (background, primary, error…)
+│   ├── ColorTokens.kt        # raw ARGB Long values (internal)
+│   ├── AdaptiveColor.kt      # light + dark color pair
+│   ├── ColorToken.kt         # public adaptive color palette
+│   └── Palette.kt            # semantic roles (background, primary, error...)
+├── geometry/
+│   └── Orientation.kt        # Horizontal / Vertical
+├── shape/
+│   ├── ContinuousCurvature.kt   # pure-Kotlin squircle path emitter
+│   ├── CornerPathReceiver.kt    # sink for path commands
+│   ├── CornerStyle.kt           # Circular vs Continuous
+│   └── internal/
+│       └── CornerBuilder.kt     # squircle bezier solver (kotlin.math only)
+├── size/
+│   ├── SizeToken.kt          # ExtraSmall / Small / Medium / Large / ExtraLarge
+│   └── SizeScale.kt          # raw dp Float values per tier
 ├── typography/
-│   ├── TypeScale.kt        # raw sp Float values
-│   └── Typography.kt       # semantic roles (bodyMedium, titleLarge…)
+│   ├── TypeScale.kt          # raw sp Float values
+│   └── Typography.kt         # semantic roles (bodyMedium, titleLarge...)
 └── spacing/
-    └── Spacing.kt          # 4dp grid (Xs=4, Sm=8, Md=16…)
+    └── Spacing.kt            # 4dp grid (Xs=4, Sm=8, Md=16...)
+```
+
+The shape APIs in `:foundation` are deliberately framework-agnostic. Non-Compose consumers — for
+example a system-level dynamic-island overlay rendered with `android.graphics.Canvas` — implement
+[`CornerPathReceiver`](../foundation/src/commonMain/kotlin/framework/cortena/ui/shape/CornerPathReceiver.kt)
+and call `ContinuousCurvature.emit(...)` to obtain the same squircle path math used by the
+Compose components.
+
+### `:shape`
+
+**Compose-aware shape system.** Depends on `:foundation` and on `compose.runtime` + `compose.ui`.
+Bridges the framework-agnostic squircle math from `:foundation` to the Compose `Shape` API and
+provides the `ComponentShape` hierarchy used throughout `:compose`. Publishable as a standalone
+AAR for Compose apps that only want the shape system.
+
+```
+shape/src/commonMain/kotlin/framework/cortena/ui/shape/
+├── CapsuleShape.kt           # stadium / pill — radius = minDimension / 2
+├── ComponentShape.kt         # sealed Shape contract, exposes Corners
+├── CornerRadii.kt            # per-corner Dp record + lerp
+├── RectangleShape.kt         # sharp rectangle data object
+├── RoundedShape.kt           # uniform Dp rounded rectangle
+├── ShapeCopy.kt              # ComponentShape.copy(...) overloads
+├── ShapeLerp.kt              # lerp(start, stop, fraction[, style])
+├── UnevenShape.kt            # per-corner CornerRadii rounded rectangle
+└── internal/
+    └── ShapeOutline.kt       # bridge from ContinuousCurvature → Compose Outline / Path
 ```
 
 ### `:compose`
 
-Compose wrappers and theme layer. Depends on `:foundation`.
+Compose wrappers and theme layer. Depends on `:foundation` and `:shape`.
 Converts foundation tokens (`Long`/`Float`) to Compose types (`Color`, `TextUnit`, `Dp`).
 Provides `Theme { }` entry point via `CompositionLocalProvider`.
 
@@ -62,29 +104,19 @@ compose/src/commonMain/kotlin/framework/cortena/ui/
 │   └── shadow/
 │       ├── Shadow.kt                  # shadow data class (radius, offset, color)
 │       ├── ShadowModifier.kt          # Modifier.componentShadow
-│       ├── InnerShadow.kt            # inner shadow rendering
+│       ├── InnerShadow.kt             # inner shadow rendering
 │       └── InnerShadowModifier.kt     # Modifier.innerShadow
 ├── interaction/
 │   ├── DampedAnimation.kt            # spring-physics animation driver
 │   ├── InteractiveAnimation.kt       # graphicsLayer press/drag transforms
 │   ├── InteractiveHighlight.kt       # highlight composable (commonMain)
 │   ├── InteractiveHighlightColor.kt  # highlight color utilities
-│   └── PressGesture.kt              # inspectDragGestures helper
+│   └── PressGesture.kt               # inspectDragGestures helper
 ├── layout/
 │   ├── AppBar.kt            # top app bar slot
 │   ├── Body.kt              # edge-to-edge root wrapper
 │   ├── SafeArea.kt          # system insets padding
 │   └── ScrollView.kt        # scrollable content container
-├── shape/
-│   ├── CapsuleShape.kt     # stadium / pill shape
-│   ├── ComponentShape.kt   # base shape interface
-│   ├── CornerRadii.kt      # per-corner radius spec
-│   ├── CornerStyle.kt      # round vs cut corner mode
-│   ├── RectangleShape.kt   # sharp rectangle
-│   ├── RoundedShape.kt     # uniform rounded rectangle
-│   ├── ShapeCopy.kt        # immutable copy helpers
-│   ├── ShapeLerp.kt        # shape interpolation
-│   └── UnevenShape.kt      # per-corner radius shape
 └── theme/
     ├── ColorExtensions.kt         # ColorToken.value() helpers
     ├── LocalProviders.kt          # CompositionLocal definitions
@@ -92,6 +124,9 @@ compose/src/commonMain/kotlin/framework/cortena/ui/
     ├── Theme.kt                   # Theme() composable entry point
     └── ThemeMode.kt               # Light / Dark / Auto enum
 ```
+
+> Shape source files moved to `:shape`. Component code still imports them via the same package
+> path (`framework.cortena.ui.shape.CapsuleShape`, etc.) — only the module boundary changed.
 
 #### `androidMain` — Android Platform Code
 
@@ -108,7 +143,7 @@ compose/src/androidMain/kotlin/framework/cortena/ui/
 
 ### `:catalog`
 
-Showcase app. Depends on `:compose` (and transitively `:foundation`).
+Showcase app. Depends on `:compose` (and transitively `:shape` + `:foundation`).
 Used to develop and visually verify all components in a live environment.
 
 ```
@@ -189,6 +224,7 @@ Component documentation is maintained in `docs/components/` following a standard
 | `SafeArea.md`    | System insets padding        |
 | `ScrollView.md`  | Scrollable container         |
 | `Separator.md`   | Visual divider line          |
+| `Shape.md`       | Shape system + squircle math |
 | `Slider.md`      | Value adjustment slider      |
 | `Text.md`        | Semantic text component      |
 | `Theme.md`       | Theme composable             |
@@ -203,6 +239,13 @@ Each document follows the structure: **Concept → API Reference → Parameters 
 `:foundation` means the token layer has zero dependency on Compose — it can
 be referenced from `Android.bp` builds for ROM integration without pulling
 in the entire Compose runtime.
+
+**Why a separate `:shape` module?**
+The squircle math itself is pure Kotlin and lives in `:foundation`. The Compose-binding layer
+(`ComponentShape`, `RoundedShape`, etc.) sits in `:shape` so that consumers who want only the
+shape system — for example a CortenaOS dynamic-island overlay or a third-party Compose app —
+can depend on `:shape` without pulling the rest of CortenaUI. This also keeps the boundary
+between framework-agnostic geometry and Compose types explicit and enforceable.
 
 **Why a separate `:compose` module?**
 When ROM integration comes, `:foundation` goes into the system image. Compose

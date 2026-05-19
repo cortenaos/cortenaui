@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.shape.internal
 
 import kotlin.math.acos
@@ -7,6 +11,30 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 
+/**
+ * Solver for continuous-curvature ("squircle") corner Bezier control points.
+ *
+ * The output for a given corner is a [DoubleArray] of length 20 representing 10 (x, y) pairs in the
+ * unit corner space [0, 1] x [0, 1]. The 10 points correspond to:
+ * 1. Anchor on the trailing edge.
+ * 2. First straightening control point on the trailing edge.
+ * 3. Second straightening control point on the trailing edge.
+ * 4. Curve start (tangent transitions from straight to bezier).
+ * 5. First mid-arc control point.
+ * 6. Second mid-arc control point.
+ * 7. Curve end (tangent transitions from bezier back to straight).
+ * 8. Second straightening control point on the leading edge.
+ * 9. First straightening control point on the leading edge.
+ * 10. Anchor on the leading edge.
+ *
+ * Callers map this unit corner into the actual corner of a rectangle with the appropriate
+ * translation, scaling, and reflection. See [continuousCurvatureRoundedRectanglePath] for the
+ * canonical mapping.
+ *
+ * This class is pure Kotlin (`kotlin.math` only) and intentionally lives in `:foundation` so it can
+ * be consumed by the Compose-based [framework.cortena.ui.shape] module, by the Android View system,
+ * by AOSP-level renderers, or by any other consumer that needs squircle geometry.
+ */
 internal class CornerBuilder(val extendedFraction: Double = 2.0 / 3.0, arcFraction: Double = 0.5) {
 
     private val theta = (1.0 - arcFraction) * FRAC_PI_4
@@ -200,8 +228,8 @@ private fun solveDepressedQuarticSingle(p: Double, q: Double, r: Double): Double
     val d = r * p / 2.0 - q * q / 8.0
     val f = ((3.0 * c) - (b * b)) / 3.0
     val g = ((2.0 * b * b * b) - (9.0 * b * c) + (27.0 * d)) / 27.0
-    val r = sqrt(-f * f * f / 27.0)
-    val phi = acos(-g / (2.0 * r))
+    val rootCoefficient = sqrt(-f * f * f / 27.0)
+    val phi = acos(-g / (2.0 * rootCoefficient))
     val y = 2.0 * sqrt(-f / 3.0) * cos(phi / 3.0)
     val z = y - b / 3.0
     val u = sqrt(2.0 * z - p)
