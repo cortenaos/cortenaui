@@ -4,7 +4,7 @@
 
 ## Concept
 
-Any component written to Cortena specifications, such as `Text` or `SafeArea`, reads its color, spacing, or shape properties via:
+Any component written to Cortena specifications, such as `Text` or `SafeArea`, reads its color, spacing, motion, or shape properties via:
 
 - `LocalIsDark.current`
 - `LocalColors.current`
@@ -12,6 +12,7 @@ Any component written to Cortena specifications, such as `Text` or `SafeArea`, r
 - `LocalFontFamily.current`
 - `LocalSpacing.current`
 - `LocalSizeToken.current`
+- `LocalMotion.current`
 
 The function of `Theme` is to provide these actual values at the top of the hierarchy (root node). `ContentView` already calls this internally, so you rarely need to call it directly unless you are inside a preview function (`@Preview`) of pure compose.
 
@@ -25,6 +26,7 @@ fun Theme(
     typography: Typography = DefaultTypography,
     fontFamily: FontFamily? = null,
     sizeToken: SizeToken = SizeToken.Medium,
+    motion: Motion = DefaultMotion,
     content: @Composable () -> Unit
 )
 ```
@@ -38,4 +40,5 @@ fun Theme(
 | `typography` | `Typography`             | Overrides the adjusted _font scale_. Default: `DefaultTypography`.                                                                       |
 | `fontFamily` | `FontFamily?`            | Custom font family applied to all `Text` components. If `null`, uses the system default font (`FontFamily.Default`).                     |
 | `sizeToken`  | `SizeToken`              | Sets the global component size tier. All sized components inherit this. Default: `SizeToken.Medium`.                                     |
+| `motion`     | `Motion`                 | Spring presets, durations, and easings consumed by every interactive component. Default: `DefaultMotion`. See [Motion](Motion.md).       |
 | `content`    | `@Composable () -> Unit` | Lambda for your child Composable function placed under the umbrella of this theme.                                                       |
