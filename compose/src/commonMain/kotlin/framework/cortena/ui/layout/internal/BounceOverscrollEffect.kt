@@ -28,14 +28,21 @@ internal class BounceOverscrollEffect(
     private val orientation: Orientation,
 ) : OverscrollEffect {
 
+    // Soft visual cap. The animatable is no longer hard-clamped to this value; instead a rubber
+    // band resistance curve makes pulling beyond this point progressively harder.
     private val maxOverscroll = 800f
+
+    // When the offset magnitude exceeds this, auto-release fires while the finger is still down.
+    private val autoReleaseThreshold = maxOverscroll * 0.8f
+
     private val overscrollOffset = Animatable(0f)
 
     private var snapJob: Job? = null
 
-    init {
-        overscrollOffset.updateBounds(-maxOverscroll, maxOverscroll)
-    }
+    // Set true after auto-release fires while the user is still holding the screen. Further drag
+    // input is ignored (delegated to the underlying scrollable) until the gesture ends, which
+    // prevents oscillation against the same finger position.
+    private var autoReleaseLatched = false
 
     override fun applyToScroll(
         delta: Offset,
@@ -45,7 +52,13 @@ internal class BounceOverscrollEffect(
         val available = if (orientation == Orientation.Vertical) delta.y else delta.x
         var consumed = 0f
 
-        // Pre-scroll: Only intercept if dragging in the OPPOSITE direction of the overscroll
+        // Once auto-release has fired, ignore the rest of this gesture entirely. The latch is
+        // cleared in applyToFling, which runs when the pointer lifts.
+        if (autoReleaseLatched && source == NestedScrollSource.UserInput) {
+            return performScroll(delta)
+        }
+
+        // Pre-scroll: only intercept if dragging in the OPPOSITE direction of the overscroll.
         if (overscrollOffset.value != 0f && source != NestedScrollSource.SideEffect) {
             val previousSign = overscrollOffset.value.sign
             val availableSign = available.sign
@@ -67,7 +80,7 @@ internal class BounceOverscrollEffect(
             }
         }
 
-        // Pass the remaining delta to the underlying list/scrollable
+        // Pass the remaining delta to the underlying list/scrollable.
         val remainingDelta =
             if (orientation == Orientation.Vertical) {
                 delta.copy(y = delta.y - consumed)
@@ -77,16 +90,32 @@ internal class BounceOverscrollEffect(
 
         val scrollConsumed = performScroll(remainingDelta)
 
-        // Post-scroll: If the list couldn't consume all the scroll (hit the bounds), add it to
-        // overscroll
+        // Post-scroll: if the list could not consume all the scroll (hit the bounds), feed it into
+        // overscroll with rubber-band resistance.
         val unconsumed = remainingDelta - scrollConsumed
         val availableUnconsumed =
             if (orientation == Orientation.Vertical) unconsumed.y else unconsumed.x
 
         if (abs(availableUnconsumed) > 1f && source == NestedScrollSource.UserInput) {
-            val newValue = overscrollOffset.value + availableUnconsumed * 0.3f
+            val resistance = rubberBandResistance(abs(overscrollOffset.value))
+            val newValue = overscrollOffset.value + availableUnconsumed * resistance
+
             snapJob?.cancel()
             snapJob = scope.launch { overscrollOffset.snapTo(newValue) }
+
+            // Auto-release: if the user keeps pulling past the threshold, spring back to zero
+            // immediately and latch out further drag for this gesture.
+            if (abs(newValue) >= autoReleaseThreshold && !autoReleaseLatched) {
+                autoReleaseLatched = true
+                snapJob?.cancel()
+                snapJob =
+                    scope.launch {
+                        overscrollOffset.animateTo(
+                            targetValue = 0f,
+                            animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
+                        )
+                    }
+            }
         }
 
         return if (orientation == Orientation.Vertical) {
@@ -102,6 +131,9 @@ internal class BounceOverscrollEffect(
     ) {
         snapJob?.cancel()
         snapJob = null
+
+        // The pointer has lifted. Allow overscroll on the next gesture again.
+        autoReleaseLatched = false
 
         val availableVelocity = if (orientation == Orientation.Vertical) velocity.y else velocity.x
         var consumedVelocity = 0f
@@ -188,4 +220,16 @@ internal class BounceOverscrollEffect(
                     translationX = overscrollOffset.value
                 }
             }
+
+    // Rubber-band resistance. Returns a multiplier in (0, 0.3] that shrinks as the absolute
+    // overscroll grows toward maxOverscroll, so the further the user pulls, the harder it gets.
+    // This replaces the previous hard bound on the Animatable, which prevented auto-release from
+    // ever firing because the value was clamped.
+    private fun rubberBandResistance(absoluteOffset: Float): Float {
+        val base = 0.3f
+        val ratio = (absoluteOffset / maxOverscroll).coerceIn(0f, 1f)
+        // Quadratic falloff: full base near zero, ~25% of base at maxOverscroll.
+        val falloff = 1f - 0.75f * ratio * ratio
+        return base * falloff
+    }
 }
