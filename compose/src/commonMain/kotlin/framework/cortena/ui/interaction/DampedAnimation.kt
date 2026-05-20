@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.interaction
 
 import androidx.compose.animation.core.Animatable
@@ -27,6 +31,11 @@ class DampedAnimation(
     val onDrag: DampedAnimation.(size: IntSize, dragAmount: Offset) -> Unit,
 ) {
 
+    // Multi-track spring specs. These deliberately do NOT pull from LocalMotion: each track
+    // (position, velocity, press progress, scale-x, scale-y) needs its own dampingRatio /
+    // stiffness / visibilityThreshold tuple to feel right under continuous gesture input.
+    // The standard three-tier presets in :motion are for content-level animations; raw gesture
+    // physics is the one place where bespoke specs are correct. Touch with care.
     private val valueAnimationSpec = spring(1f, 1000f, visibilityThreshold)
     private val velocityAnimationSpec = spring(0.5f, 300f, visibilityThreshold * 10f)
     private val pressProgressAnimationSpec = spring(1f, 1000f, 0.001f)

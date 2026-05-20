@@ -32,6 +32,11 @@ include(":foundation")
 // so non-CortenaUI Compose consumers can use ComponentShape without pulling :compose.
 include(":shape")
 
+// Motion: Compose-aware spring presets, durations, and easings. Depends on :foundation.
+// Publishable as a standalone AAR so non-CortenaUI Compose consumers can adopt the same
+// motion language without pulling :compose.
+include(":motion")
+
 // Compose: Compose wrappers + theme layer
 include(":compose")
 

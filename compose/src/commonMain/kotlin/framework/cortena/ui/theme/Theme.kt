@@ -11,6 +11,9 @@ import androidx.compose.ui.text.font.FontFamily
 import framework.cortena.ui.color.DarkPalette
 import framework.cortena.ui.color.LightPalette
 import framework.cortena.ui.color.Palette
+import framework.cortena.ui.motion.DefaultMotion
+import framework.cortena.ui.motion.LocalMotion
+import framework.cortena.ui.motion.Motion
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.spacing.Spacing
 import framework.cortena.ui.typography.DefaultTypography
@@ -23,6 +26,7 @@ fun Theme(
     typography: Typography = DefaultTypography,
     fontFamily: FontFamily? = null,
     sizeToken: SizeToken = SizeToken.Medium,
+    motion: Motion = DefaultMotion,
     content: @Composable () -> Unit,
 ) {
     val isDark =
@@ -42,6 +46,7 @@ fun Theme(
         LocalFontFamily provides resolvedFontFamily,
         LocalSpacing provides Spacing,
         LocalSizeToken provides sizeToken,
+        LocalMotion provides motion,
         content = content,
     )
 }

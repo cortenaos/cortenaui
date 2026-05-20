@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.geometry.Orientation
 import framework.cortena.ui.layout.internal.BounceOverscrollEffect
+import framework.cortena.ui.motion.LocalMotion
 import framework.cortena.ui.shape.CapsuleShape
 import framework.cortena.ui.theme.LocalColors
 import kotlinx.coroutines.delay
@@ -106,13 +107,16 @@ fun ScrollView(
         )
 
     val colors = LocalColors.current
+    val motion = LocalMotion.current
     val resolvedIndicatorColor =
         if (indicatorColor.isSpecified) indicatorColor else Color(colors.outline)
 
     // Bounce Overscroll
     val bounceScope = rememberCoroutineScope()
     val overscrollEffect =
-        remember(bounceScope, orientation) { BounceOverscrollEffect(bounceScope, orientation) }
+        remember(bounceScope, orientation, motion) {
+            BounceOverscrollEffect(bounceScope, orientation, motion.smooth)
+        }
 
     // Callbacks via SnapshotFlow
     LaunchedEffect(scrollState) {
@@ -192,6 +196,7 @@ private fun ScrollIndicator(
     draggable: Boolean,
 ) {
     val density = LocalDensity.current
+    val motion = LocalMotion.current
     val minIndicatorSize = with(density) { 48.dp.toPx() }
     val viewportSize = scrollState.viewportSize.toFloat()
     val totalSize = viewportSize + scrollState.maxValue
@@ -231,14 +236,16 @@ private fun ScrollIndicator(
     val isDraggingState = rememberUpdatedState(isDragging)
 
     // Thickness scale animates up to IndicatorDragScale while the user is dragging the indicator,
-    // confirming the active interaction with a slight spring overshoot.
+    // confirming the active interaction with a slight spring overshoot. We borrow stiffness from
+    // motion.smooth and override damping to a bouncier value — overshoot is the whole point here,
+    // so it justifies a custom dampingRatio rather than a stock preset.
     val thicknessScale = remember { Animatable(1f) }
     LaunchedEffect(isDragging) {
         thicknessScale.animateTo(
             targetValue = if (isDragging) IndicatorDragScale else 1f,
             animationSpec =
                 spring(
-                    stiffness = Spring.StiffnessMediumLow,
+                    stiffness = motion.smooth.stiffness,
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                 ),
         )
@@ -261,7 +268,11 @@ private fun ScrollIndicator(
                         if (!isDraggingState.value) {
                             alphaAnim.animateTo(
                                 targetValue = 0f,
-                                animationSpec = tween(durationMillis = IndicatorFadeDurationMillis),
+                                animationSpec =
+                                    tween(
+                                        durationMillis = motion.medium,
+                                        easing = motion.standardEasing,
+                                    ),
                             )
                         }
                     }
@@ -334,5 +345,4 @@ private fun ScrollIndicator(
 }
 
 private const val IndicatorIdleHideDelayMillis: Long = 1500L
-private const val IndicatorFadeDurationMillis: Int = 220
 private const val IndicatorDragScale: Float = 2f
