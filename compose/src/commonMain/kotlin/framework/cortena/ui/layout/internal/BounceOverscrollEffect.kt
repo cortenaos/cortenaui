@@ -5,9 +5,9 @@
 package framework.cortena.ui.layout.internal
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.core.exponentialDecay
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.ui.Modifier
@@ -26,6 +26,10 @@ import kotlinx.coroutines.launch
 internal class BounceOverscrollEffect(
     private val scope: CoroutineScope,
     private val orientation: Orientation,
+    // Spring spec used whenever the overscroll offset animates back toward zero. Sourced from
+    // LocalMotion at construction site so the release feel stays consistent with other content
+    // motion in the framework.
+    private val releaseSpec: SpringSpec<Float>,
 ) : OverscrollEffect {
 
     // Soft visual cap. The animatable is no longer hard-clamped to this value; instead a rubber
@@ -110,10 +114,7 @@ internal class BounceOverscrollEffect(
                 snapJob?.cancel()
                 snapJob =
                     scope.launch {
-                        overscrollOffset.animateTo(
-                            targetValue = 0f,
-                            animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
-                        )
+                        overscrollOffset.animateTo(targetValue = 0f, animationSpec = releaseSpec)
                     }
             }
         }
@@ -156,7 +157,7 @@ internal class BounceOverscrollEffect(
                     overscrollOffset.animateTo(
                         targetValue = 0f,
                         initialVelocity = availableVelocity,
-                        animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
+                        animationSpec = releaseSpec,
                     )
                 } else {
                     try {
@@ -173,10 +174,7 @@ internal class BounceOverscrollEffect(
                 }
             } else {
                 scope.launch {
-                    overscrollOffset.animateTo(
-                        targetValue = 0f,
-                        animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
-                    )
+                    overscrollOffset.animateTo(targetValue = 0f, animationSpec = releaseSpec)
                 }
             }
         }
@@ -198,13 +196,10 @@ internal class BounceOverscrollEffect(
             overscrollOffset.animateTo(
                 targetValue = 0f,
                 initialVelocity = postFlingAvailable,
-                animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
+                animationSpec = releaseSpec,
             )
         } else if (overscrollOffset.value != 0f) {
-            overscrollOffset.animateTo(
-                targetValue = 0f,
-                animationSpec = spring(stiffness = 300f, dampingRatio = 0.7f),
-            )
+            overscrollOffset.animateTo(targetValue = 0f, animationSpec = releaseSpec)
         }
     }
 

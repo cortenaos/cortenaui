@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.interaction
 
 import android.graphics.RuntimeShader
@@ -26,6 +30,10 @@ actual constructor(
     val position: (size: Size, offset: Offset) -> Offset,
 ) {
 
+    // Bespoke spring specs. Like DampedAnimation, the highlight's press progress and shader
+    // position trackers each need a custom dampingRatio / stiffness / visibilityThreshold tuple
+    // to stay smooth under raw pointer input. The standard three-tier presets in :motion are not
+    // a fit here — gesture physics is the documented exception to "always use LocalMotion".
     private val pressProgressAnimationSpec = spring(0.5f, 300f, 0.001f)
     private val positionAnimationSpec = spring(0.5f, 300f, Offset.VisibilityThreshold)
 

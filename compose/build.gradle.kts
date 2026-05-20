@@ -19,6 +19,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":foundation"))
             api(project(":shape"))
+            api(project(":motion"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
