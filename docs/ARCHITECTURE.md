@@ -6,15 +6,20 @@
 graph TD
     catalog["`:catalog`"] --> compose["`:compose`"]
     compose --> shape["`:shape`"]
+    compose --> motion["`:motion`"]
     compose --> foundation["`:foundation`"]
     shape --> foundation
+    motion --> foundation
 ```
 
-`:catalog` depends on `:compose` (and transitively `:shape` and `:foundation`).
-`:compose` depends on `:shape` and `:foundation`. Both are exposed via `api(...)` so consumers do
-not need a separate dependency on either.
+`:catalog` depends on `:compose` (and transitively `:shape`, `:motion`, and `:foundation`).
+`:compose` depends on `:shape`, `:motion`, and `:foundation`. All three are exposed via `api(...)`
+so consumers do not need separate dependencies.
 `:shape` depends on `:foundation` and on `compose.runtime` + `compose.ui`. It can be consumed
 standalone by Compose-based apps that only need the shape system.
+`:motion` depends on `:foundation` and on `compose.runtime` + `compose.animation.core`. It can be
+consumed standalone by Compose-based apps that want to adopt Cortena's motion language without
+pulling the rest of the framework.
 `:foundation` has zero external dependencies — pure Kotlin.
 
 ## Modules
@@ -43,6 +48,9 @@ foundation/src/commonMain/kotlin/framework/cortena/ui/
 │   ├── CornerStyle.kt           # Circular vs Continuous
 │   └── internal/
 │       └── CornerBuilder.kt     # squircle bezier solver (kotlin.math only)
+├── motion/
+│   ├── DurationTokens.kt     # raw ms Long values: Fast=150, Medium=250, Slow=450
+│   └── EasingTokens.kt       # cubic-bezier coefficients as Float quartets
 ├── size/
 │   ├── SizeToken.kt          # ExtraSmall / Small / Medium / Large / ExtraLarge
 │   └── SizeScale.kt          # raw dp Float values per tier
@@ -80,11 +88,32 @@ shape/src/commonMain/kotlin/framework/cortena/ui/shape/
     └── ShapeOutline.kt       # bridge from ContinuousCurvature → Compose Outline / Path
 ```
 
+### `:motion`
+
+**Centralized motion language.** Depends on `:foundation` and on `compose.runtime` +
+`compose.animation.core`. Holds the shared spring presets, duration tiers, and easing curves
+consumed by every interactive component. Components must read motion specs through
+`LocalMotion.current` rather than constructing `spring(...)` or `tween(...)` calls inline.
+
+The split mirrors `:shape`: pure Kotlin tokens at the foundation level (raw `Long` ms,
+`Float` cubic-bezier coefficients), Compose adapters in `:motion` that turn those tokens into
+`SpringSpec`, `Easing`, and `AnimationSpec` instances.
+
+```
+motion/src/commonMain/kotlin/framework/cortena/ui/motion/
+├── SpringPresets.kt          # Snappy / Smooth / Gentle as SpringSpec<Float>
+├── MotionDuration.kt         # DurationTokens narrowed to Int for tween()
+├── MotionEasing.kt           # EasingTokens lifted to Compose Easing
+├── Motion.kt                 # aggregate carrier consumed via LocalMotion
+└── LocalMotion.kt            # staticCompositionLocalOf<Motion> with default DefaultMotion
+```
+
 ### `:compose`
 
-Compose wrappers and theme layer. Depends on `:foundation` and `:shape`.
+Compose wrappers and theme layer. Depends on `:foundation`, `:shape`, and `:motion`.
 Converts foundation tokens (`Long`/`Float`) to Compose types (`Color`, `TextUnit`, `Dp`).
-Provides `Theme { }` entry point via `CompositionLocalProvider`.
+Provides `Theme { }` entry point via `CompositionLocalProvider`, which also injects
+`LocalMotion` for the spring / duration / easing language.
 
 The module is split into `commonMain` (multiplatform-ready) and `androidMain` (Android-specific platform code).
 
@@ -116,7 +145,7 @@ compose/src/commonMain/kotlin/framework/cortena/ui/
 │   ├── AppBar.kt            # top app bar slot
 │   ├── Body.kt              # edge-to-edge root wrapper
 │   ├── SafeArea.kt          # system insets padding
-│   └── ScrollView.kt        # scrollable content container
+│   └── ScrollView.kt        # scrollable container with bounce overscroll, auto-hiding and draggable indicator
 └── theme/
     ├── ColorExtensions.kt         # ColorToken.value() helpers
     ├── LocalProviders.kt          # CompositionLocal definitions
@@ -143,7 +172,7 @@ compose/src/androidMain/kotlin/framework/cortena/ui/
 
 ### `:catalog`
 
-Showcase app. Depends on `:compose` (and transitively `:shape` + `:foundation`).
+Showcase app. Depends on `:compose` (and transitively `:shape`, `:motion`, `:foundation`).
 Used to develop and visually verify all components in a live environment.
 
 ```
@@ -162,7 +191,7 @@ catalog/src/main/java/app/cortena/ui/catalog/
 
 ### CompositionLocal Providers
 
-The theme layer exposes five `CompositionLocal` keys, each provided by the `Theme()` composable:
+The theme layer exposes the following `CompositionLocal` keys, each provided by the `Theme()` composable:
 
 | Key                 | Type         | Default             | Purpose                                       |
 | ------------------- | ------------ | ------------------- | --------------------------------------------- |
@@ -171,6 +200,8 @@ The theme layer exposes five `CompositionLocal` keys, each provided by the `Them
 | `LocalContentColor` | `Color?`     | `null`              | Inherited foreground color (scoped by parent) |
 | `LocalTypography`   | `Typography` | `DefaultTypography` | Semantic text style scales                    |
 | `LocalSpacing`      | `Spacing`    | `Spacing`           | 4dp-grid spacing tokens                       |
+| `LocalSizeToken`    | `SizeToken`  | `SizeToken.Medium`  | Global component size tier                    |
+| `LocalMotion`       | `Motion`     | `DefaultMotion`     | Spring presets, duration tiers, easing curves |
 
 ### ThemeMode Resolution
 
@@ -207,6 +238,22 @@ val resolvedColor = if (customColor.isSpecified) customColor else Color(colors.s
 
 This allows per-instance color overrides while defaulting to theme-aware semantic roles.
 
+### Motion
+
+All animation specs originate from `LocalMotion.current`. Components do not hardcode `spring(...)` or `tween(...)` numbers — they pick a preset:
+
+```kotlin
+val motion = LocalMotion.current
+
+animateFloatAsState(target, animationSpec = motion.snappy)             // tight feedback
+animateDpAsState(targetDp, animationSpec = motion.smooth)              // content shift
+tween<Color>(motion.medium, easing = motion.standardEasing)            // deterministic fade
+```
+
+The presets carry the design language. Spring tier covers `snappy` (tight feedback), `smooth` (general motion), and `gentle` (large overlays). Duration tier covers `fast` (150ms), `medium` (250ms), and `slow` (450ms). Easings cover `standardEasing`, `emphasizedEasing`, and `linearEasing`.
+
+The single documented exception is raw gesture-physics primitives — `DampedAnimation` and `InteractiveHighlight` — where each track (position, velocity, press progress, scale-x, scale-y) needs its own bespoke `dampingRatio` / `stiffness` / `visibilityThreshold` tuple to feel right under continuous pointer input. Any new bespoke spec inside one of these primitives must include an inline comment explaining why a preset cannot be used.
+
 ### Shadow System
 
 The `componentShadow` modifier renders drop shadows that remain visible during scale animations (unlike standard `Modifier.shadow` which clips at the original bounds). This is critical for interactive components like Toggle and Slider indicators.
@@ -221,6 +268,7 @@ Component documentation is maintained in `docs/components/` following a standard
 | `Body.md`        | Edge-to-edge root wrapper    |
 | `Button.md`      | Interactive button           |
 | `ContentView.md` | Android activity entry point |
+| `Motion.md`      | Motion language reference    |
 | `SafeArea.md`    | System insets padding        |
 | `ScrollView.md`  | Scrollable container         |
 | `Separator.md`   | Visual divider line          |
@@ -246,6 +294,14 @@ The squircle math itself is pure Kotlin and lives in `:foundation`. The Compose-
 shape system — for example a CortenaOS dynamic-island overlay or a third-party Compose app —
 can depend on `:shape` without pulling the rest of CortenaUI. This also keeps the boundary
 between framework-agnostic geometry and Compose types explicit and enforceable.
+
+**Why a separate `:motion` module?**
+Same reasoning as `:shape`. The raw duration ms and cubic-bezier coefficients live in
+`:foundation` (pure Kotlin, framework-agnostic). The Compose adapters that turn those into
+`SpringSpec`, `Easing`, and `AnimationSpec` instances live in `:motion` so consumers — for
+example a CortenaOS system surface or a third-party Compose app adopting Cortena's motion
+language — can depend on `:motion` without the rest of the framework. The split also keeps
+`:foundation` free of any `compose.animation.core` types.
 
 **Why a separate `:compose` module?**
 When ROM integration comes, `:foundation` goes into the system image. Compose
