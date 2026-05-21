@@ -18,14 +18,14 @@ dependencyResolutionManagement {
 }
 ```
 
-## All-in-one — `:compose`
+## All-in-one — `ui`
 
-The most common case. `:compose` transitively pulls `:foundation`, `:shape`, and `:motion`, so you get the full component library with one dependency.
+The most common case. The `ui` artifact transitively pulls `ui-foundation`, `ui-shape`, and `ui-motion`, so you get the full component library with one dependency.
 
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.cortenaos:compose:0.1.0-alpha")
+    implementation("io.github.cortenaos:ui:0.1.0-alpha")
 }
 ```
 
@@ -52,13 +52,13 @@ fun App() {
 
 Pull only the modules you need. Useful if you only want the design tokens, just the shape system, or only the motion language without the rest of the component layer.
 
-### Tokens only — `:foundation`
+### Tokens only — `ui-foundation`
 
 Pure Kotlin, zero dependencies. Use this if you want CortenaUI's color / size / typography / motion tokens without any Compose surface.
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:foundation:0.1.0-alpha")
+    implementation("io.github.cortenaos:ui-foundation:0.1.0-alpha")
 }
 ```
 
@@ -69,13 +69,13 @@ import framework.cortena.ui.typography.TypeScale
 import framework.cortena.ui.motion.DurationTokens
 ```
 
-### Shapes only — `:shape`
+### Shapes only — `ui-shape`
 
-Compose `Shape` adapter for CortenaUI's squircle math. Useful for adopters who want the squircle / continuous-curvature look in their own Compose components without pulling in the rest of the framework. Transitively pulls `:foundation`.
+Compose `Shape` adapter for CortenaUI's squircle math. Useful for adopters who want the squircle / continuous-curvature look in their own Compose components without pulling in the rest of the framework. Transitively pulls `ui-foundation`.
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:shape:0.1.0-alpha")
+    implementation("io.github.cortenaos:ui-shape:0.1.0-alpha")
 }
 ```
 
@@ -85,13 +85,13 @@ import framework.cortena.ui.shape.RoundedShape
 import framework.cortena.ui.shape.UnevenShape
 ```
 
-### Motion only — `:motion`
+### Motion only — `ui-motion`
 
-Spring presets, duration tiers, and easing curves used across CortenaUI. Adopt this if you want consistent motion language in your own components without using CortenaUI components themselves. Transitively pulls `:foundation`.
+Spring presets, duration tiers, and easing curves used across CortenaUI. Adopt this if you want consistent motion language in your own components without using CortenaUI components themselves. Transitively pulls `ui-foundation`.
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:motion:0.1.0-alpha")
+    implementation("io.github.cortenaos:ui-motion:0.1.0-alpha")
 }
 ```
 
@@ -103,23 +103,23 @@ import framework.cortena.ui.motion.DefaultMotion
 ## Module dependency graph
 
 ```
-:compose ──api──┐
-                ├──► :foundation
-:shape ─────api─┤
-                │
-:motion ────api─┘
+ui ──api──┐
+          ├──► ui-foundation
+ui-shape ─api─┤
+          │
+ui-motion api─┘
 ```
 
 Direct dependencies you can declare:
 
-| You depend on | You also get (transitively)        |
-| ------------- | ---------------------------------- |
-| `:foundation` | nothing                            |
-| `:shape`      | `:foundation`                      |
-| `:motion`     | `:foundation`                      |
-| `:compose`    | `:foundation`, `:shape`, `:motion` |
+| You depend on   | You also get (transitively)              |
+| --------------- | ---------------------------------------- |
+| `ui-foundation` | nothing                                  |
+| `ui-shape`      | `ui-foundation`                          |
+| `ui-motion`     | `ui-foundation`                          |
+| `ui`            | `ui-foundation`, `ui-shape`, `ui-motion` |
 
-> Each module is a Kotlin Multiplatform publication. Always declare the artifact without a platform suffix (e.g. `compose`, not `compose-android`). Gradle reads the metadata and resolves the right variant for your target — typically the Android AAR — automatically.
+> Each module is a Kotlin Multiplatform publication. Always declare the artifact without a platform suffix (e.g. `ui`, not `ui-android`). Gradle reads the metadata and resolves the right variant for your target — typically the Android AAR — automatically.
 
 ## Snapshot builds
 
@@ -129,16 +129,16 @@ There are no snapshot builds during the alpha phase. Each `0.x.0-alpha` tag is a
 
 Each release on GitHub also attaches per-module AARs as assets:
 
-- `foundation-<version>.aar`
-- `shape-<version>.aar`
-- `motion-<version>.aar`
-- `compose-<version>.aar`
+- `ui-foundation-<version>.aar`
+- `ui-shape-<version>.aar`
+- `ui-motion-<version>.aar`
+- `ui-<version>.aar`
 
 Drop them into your project's `libs/` folder if you need an offline-friendly install. Note that with this approach you lose Maven's transitive dependency resolution — you must include every AAR your chosen module depends on.
 
 ## Requirements
 
-- **Min SDK**: 35 for `:compose`, 21 for `:foundation`, `:shape`, and `:motion`.
+- **Min SDK**: 35 for `ui`, 21 for `ui-foundation`, `ui-shape`, and `ui-motion`.
 - **Compile SDK**: 37+.
 - **Kotlin**: 2.3+.
 - **Compose Multiplatform**: 1.10.3+.

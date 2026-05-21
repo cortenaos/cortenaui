@@ -4,10 +4,12 @@ This document covers what a CortenaUI maintainer needs to do to ship a release. 
 
 CortenaUI publishes four artifacts to **Maven Central** under the `io.github.cortenaos` group ID:
 
-- `io.github.cortenaos:foundation`
-- `io.github.cortenaos:shape`
-- `io.github.cortenaos:motion`
-- `io.github.cortenaos:compose`
+- `io.github.cortenaos:ui-foundation`
+- `io.github.cortenaos:ui-shape`
+- `io.github.cortenaos:ui-motion`
+- `io.github.cortenaos:ui`
+
+The `ui` artifact is the meta-artifact users normally depend on — it transitively pulls every other module. The `ui-*` siblings let consumers cherry-pick.
 
 Publishing is automated through the `Publish` GitHub Actions workflow. Pushing a tag of the form `v<version>` (for example `v0.1.0-alpha`) triggers a build, signs every artifact, uploads them to Maven Central, and attaches the per-module AARs to a GitHub Release.
 
@@ -58,21 +60,34 @@ The plugin (`com.vanniktech.maven.publish`) reads them as `ORG_GRADLE_PROJECT_*`
 
 Each release is a signed Git tag of the form `v<version>`. Versions follow the layout `MAJOR.MINOR.PATCH-<channel>`, where channel is `alpha`, `beta`, or omitted for stable.
 
+> The repository's `master` branch is protected, so version bumps go through a PR. The publish workflow is fired by the **tag push**, not by the merge, so branch protection does not block releases.
+
 ```bash
-# Bump the version in build.gradle.kts at the project root.
-# The single line `version = "0.1.0-alpha"` controls all four modules.
+# 1. Create a release branch off master
+git checkout master
+git pull
+git checkout -b release/0.1.1-alpha
+
+# 2. Bump the version. The single line `version = "0.1.1-alpha"` in the project root
+#    `build.gradle.kts` controls all four library modules. Mirror it in
+#    `catalog/build.gradle.kts` for cosmetic parity.
 ${EDITOR:-vim} build.gradle.kts
+${EDITOR:-vim} catalog/build.gradle.kts
 
-# Commit and tag.
-git commit -am "release: 0.1.0-alpha"
-git tag v0.1.0-alpha
+# 3. Commit and push the branch.
+git commit -am "release: 0.1.1-alpha"
+git push origin release/0.1.1-alpha
 
-# Push the tag — this is what fires the Publish workflow.
-git push origin master
-git push origin v0.1.0-alpha
+# 4. Open a PR, wait for the Build workflow to pass, merge it.
+
+# 5. Pull the merged commit and tag it.
+git checkout master
+git pull
+git tag v0.1.1-alpha
+git push origin v0.1.1-alpha
 ```
 
-The workflow takes around five minutes. Watch progress at `https://github.com/cortenaos/cortenaui/actions`.
+The tag push is what fires the Publish workflow. Watch progress at `https://github.com/cortenaos/cortenaui/actions`. The full pipeline takes around five minutes.
 
 When the workflow finishes, head to [central.sonatype.com](https://central.sonatype.com) → **Deployments** and confirm a draft deployment is staged. Review the artifacts, then click **Publish** to release to Maven Central. Artifacts become consumable about ten to thirty minutes after the publish click.
 
@@ -106,7 +121,7 @@ dependencyResolutionManagement {
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.cortenaos:compose:0.1.0-alpha")
+    implementation("io.github.cortenaos:ui:0.1.0-alpha")
 }
 ```
 

@@ -38,7 +38,7 @@ mavenPublishing {
 
     coordinates(
         groupId = group.toString(),
-        artifactId = "motion",
+        artifactId = "ui-motion",
         version = version.toString(),
     )
 

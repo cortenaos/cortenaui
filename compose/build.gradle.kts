@@ -40,7 +40,7 @@ mavenPublishing {
 
     coordinates(
         groupId = group.toString(),
-        artifactId = "compose",
+        artifactId = "ui",
         version = version.toString(),
     )
 

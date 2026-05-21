@@ -66,10 +66,10 @@ jobs:
       - name: Collect AARs
         run: |
           mkdir -p release-artifacts
-          cp foundation/build/outputs/aar/foundation-release.aar release-artifacts/foundation-${{ steps.version.outputs.value }}.aar || true
-          cp shape/build/outputs/aar/shape-release.aar release-artifacts/shape-${{ steps.version.outputs.value }}.aar || true
-          cp motion/build/outputs/aar/motion-release.aar release-artifacts/motion-${{ steps.version.outputs.value }}.aar || true
-          cp compose/build/outputs/aar/compose-release.aar release-artifacts/compose-${{ steps.version.outputs.value }}.aar || true
+          cp foundation/build/outputs/aar/foundation-release.aar release-artifacts/ui-foundation-${{ steps.version.outputs.value }}.aar || true
+          cp shape/build/outputs/aar/shape-release.aar release-artifacts/ui-shape-${{ steps.version.outputs.value }}.aar || true
+          cp motion/build/outputs/aar/motion-release.aar release-artifacts/ui-motion-${{ steps.version.outputs.value }}.aar || true
+          cp compose/build/outputs/aar/compose-release.aar release-artifacts/ui-${{ steps.version.outputs.value }}.aar || true
           ls -la release-artifacts
 
       - name: Attach AARs to GitHub Release
