@@ -6,4 +6,10 @@ plugins {
     alias(libs.plugins.android.multiplatform.library) apply false
     alias(libs.plugins.jetbrains.compose) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.maven.publish) apply false
+}
+
+allprojects {
+    group = "io.github.cortenaos"
+    version = "0.1.0-alpha"
 }
