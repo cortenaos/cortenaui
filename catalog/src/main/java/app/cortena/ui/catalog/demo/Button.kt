@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +24,7 @@ import framework.cortena.ui.color.ColorToken
 import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.ButtonStyle
 import framework.cortena.ui.components.ButtonVariant
+import framework.cortena.ui.components.Icon
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
@@ -107,10 +107,35 @@ fun ButtonDemo() {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Button(enabled = enable, size = SizeToken.ExtraSmall) { Text("XS") }
-        Button(enabled = enable, size = SizeToken.Small) { Text("S") }
-        Button(enabled = enable, size = SizeToken.Medium) { Text("M") }
-        Button(enabled = enable, size = SizeToken.Large) { Text("L") }
-        Button(enabled = enable, size = SizeToken.ExtraLarge) { Text("XL") }
+        Button(enabled = enable, size = SizeToken.Small) { Text("Small") }
+        Button(enabled = enable, size = SizeToken.Medium) { Text("Medium") }
+        Button(enabled = enable, size = SizeToken.Large) { Text("Large") }
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Button(enabled = enable, iconOnly = true, size = SizeToken.Small) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add icon",
+                tint = Color.White,
+            )
+        }
+        Button(enabled = enable, iconOnly = true, size = SizeToken.Medium) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add icon",
+                tint = Color.White,
+            )
+        }
+        Button(enabled = enable, iconOnly = true, size = SizeToken.Large) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add icon",
+                tint = Color.White,
+            )
+        }
     }
 }

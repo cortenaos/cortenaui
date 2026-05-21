@@ -30,11 +30,16 @@ import framework.cortena.ui.shape.CapsuleShape
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.LocalContentColor
+import framework.cortena.ui.theme.LocalIconSize
 import framework.cortena.ui.theme.LocalSizeToken
 import framework.cortena.ui.theme.LocalSpacing
+import framework.cortena.ui.theme.LocalTextRole
+import framework.cortena.ui.theme.LocalTextWeight
 import framework.cortena.ui.theme.componentHeight
 import framework.cortena.ui.theme.contentGap
 import framework.cortena.ui.theme.horizontalPadding
+import framework.cortena.ui.theme.iconSize
+import framework.cortena.ui.typography.TextWeight
 
 enum class ButtonStyle {
     Primary,
@@ -120,6 +125,15 @@ fun Button(
     val backgroundColor = if (background.isSpecified) background else styleBackgroundColor
     val contentColor = if (foreground.isSpecified) foreground else styleForegroundColor
 
+    // Map the button's size tier onto a default Text role for content. User can still override
+    // by passing role / weight directly to Text inside the content lambda.
+    val contentTextRole =
+        when (size) {
+            SizeToken.Small -> TextRole.BodySmall
+            SizeToken.Medium -> TextRole.BodyMedium
+            SizeToken.Large -> TextRole.BodyLarge
+        }
+
     // Changes to the background color must not destroy and recreate the InteractiveHighlight
     val interactiveHighlight =
         remember(animationScope) {
@@ -145,7 +159,7 @@ fun Button(
                     interactionSource = null,
                     indication = null,
                     enabled = enabled,
-                    hapticFeedbackEnabled = false,
+                    //hapticFeedbackEnabled = false,
                     role = Role.Button,
                     onClick = { onClick?.invoke() },
                     onLongClick = { onLongClick?.invoke() },
@@ -160,6 +174,13 @@ fun Button(
             Arrangement.spacedBy(space = size.contentGap, alignment = Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CompositionLocalProvider(LocalContentColor provides contentColor) { content() }
+        CompositionLocalProvider(
+            LocalContentColor provides contentColor,
+            LocalTextRole provides contentTextRole,
+            LocalTextWeight provides TextWeight.Default,
+            LocalIconSize provides size.iconSize,
+        ) {
+            content()
+        }
     }
 }

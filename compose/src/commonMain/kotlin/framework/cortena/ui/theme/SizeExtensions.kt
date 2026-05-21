@@ -13,108 +13,88 @@ import framework.cortena.ui.size.SizeToken
 val SizeToken.componentHeight: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.HeightExtraSmall.dp
             SizeToken.Small -> SizeScale.HeightSmall.dp
             SizeToken.Medium -> SizeScale.HeightMedium.dp
             SizeToken.Large -> SizeScale.HeightLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.HeightExtraLarge.dp
         }
 
 // Horizontal padding for content inside sized components
 val SizeToken.horizontalPadding: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.HorizontalPaddingExtraSmall.dp
             SizeToken.Small -> SizeScale.HorizontalPaddingSmall.dp
             SizeToken.Medium -> SizeScale.HorizontalPaddingMedium.dp
             SizeToken.Large -> SizeScale.HorizontalPaddingLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.HorizontalPaddingExtraLarge.dp
         }
 
 // Default icon dimension for the given size tier
 val SizeToken.iconSize: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.IconSizeExtraSmall.dp
             SizeToken.Small -> SizeScale.IconSizeSmall.dp
             SizeToken.Medium -> SizeScale.IconSizeMedium.dp
             SizeToken.Large -> SizeScale.IconSizeLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.IconSizeExtraLarge.dp
         }
 
 // Spacing between icon and label inside a component
 val SizeToken.contentGap: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.ContentGapExtraSmall.dp
             SizeToken.Small -> SizeScale.ContentGapSmall.dp
             SizeToken.Medium -> SizeScale.ContentGapMedium.dp
             SizeToken.Large -> SizeScale.ContentGapLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.ContentGapExtraLarge.dp
         }
 
 // Toggle track width for the given size tier
 val SizeToken.toggleTrackWidth: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.ToggleTrackWidthExtraSmall.dp
             SizeToken.Small -> SizeScale.ToggleTrackWidthSmall.dp
             SizeToken.Medium -> SizeScale.ToggleTrackWidthMedium.dp
             SizeToken.Large -> SizeScale.ToggleTrackWidthLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.ToggleTrackWidthExtraLarge.dp
         }
 
 // Toggle track height for the given size tier
 val SizeToken.toggleTrackHeight: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.ToggleTrackHeightExtraSmall.dp
             SizeToken.Small -> SizeScale.ToggleTrackHeightSmall.dp
             SizeToken.Medium -> SizeScale.ToggleTrackHeightMedium.dp
             SizeToken.Large -> SizeScale.ToggleTrackHeightLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.ToggleTrackHeightExtraLarge.dp
         }
 
 // Toggle thumb inset from track edge
 val SizeToken.toggleThumbPadding: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.ToggleThumbPaddingExtraSmall.dp
             SizeToken.Small -> SizeScale.ToggleThumbPaddingSmall.dp
             SizeToken.Medium -> SizeScale.ToggleThumbPaddingMedium.dp
             SizeToken.Large -> SizeScale.ToggleThumbPaddingLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.ToggleThumbPaddingExtraLarge.dp
         }
 
 // Toggle sliding capsule width
 val SizeToken.toggleThumbWidth: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.ToggleThumbWidthExtraSmall.dp
             SizeToken.Small -> SizeScale.ToggleThumbWidthSmall.dp
             SizeToken.Medium -> SizeScale.ToggleThumbWidthMedium.dp
             SizeToken.Large -> SizeScale.ToggleThumbWidthLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.ToggleThumbWidthExtraLarge.dp
         }
 
 // Slider indicator (thumb) width
 val SizeToken.sliderIndicatorWidth: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.SliderIndicatorWidthExtraSmall.dp
             SizeToken.Small -> SizeScale.SliderIndicatorWidthSmall.dp
             SizeToken.Medium -> SizeScale.SliderIndicatorWidthMedium.dp
             SizeToken.Large -> SizeScale.SliderIndicatorWidthLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.SliderIndicatorWidthExtraLarge.dp
         }
 
 // Slider track visible height
 val SizeToken.sliderTrackHeight: Dp
     get() =
         when (this) {
-            SizeToken.ExtraSmall -> SizeScale.SliderTrackHeightExtraSmall.dp
             SizeToken.Small -> SizeScale.SliderTrackHeightSmall.dp
             SizeToken.Medium -> SizeScale.SliderTrackHeightMedium.dp
             SizeToken.Large -> SizeScale.SliderTrackHeightLarge.dp
-            SizeToken.ExtraLarge -> SizeScale.SliderTrackHeightExtraLarge.dp
         }

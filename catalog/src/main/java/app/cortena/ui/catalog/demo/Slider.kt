@@ -23,6 +23,7 @@ import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
+import framework.cortena.ui.typography.TextWeight
 
 @Composable
 fun SliderDemo() {
@@ -60,10 +61,10 @@ fun SliderDemo() {
         enabled = enable,
     )
     Text("Sizes")
-    val sizeLabels = listOf("XS", "S", "M", "L", "XL")
+    val sizeLabels = listOf("S", "M", "L")
     SizeToken.entries.forEachIndexed { index, sizeToken ->
         var sizeValue by remember { mutableFloatStateOf(0.5f) }
-        Text(sizeLabels[index], role = TextRole.LabelSmall)
+        Text(sizeLabels[index], role = TextRole.BodySmall, weight = TextWeight.Medium)
         Slider(
             value = { sizeValue },
             onValueChange = { sizeValue = it },
