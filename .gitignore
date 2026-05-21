@@ -13,3 +13,6 @@ local.properties
 
 # zensical
 /site
+
+# Local AAR staging directory used by the publish workflow.
+release-artifacts/
