@@ -268,22 +268,22 @@ The `componentShadow` modifier renders drop shadows that remain visible during s
 
 Component documentation is maintained in `docs/components/` following a standardized format:
 
-| Document         | Component                    |
-| ---------------- | ---------------------------- |
-| `AppBar.md`      | Top app bar                  |
-| `Body.md`        | Edge-to-edge root wrapper    |
-| `Button.md`      | Interactive button           |
-| `ContentView.md` | Android activity entry point |
-| `Icon.md`        | Tinted vector icon           |
-| `Motion.md`      | Motion language reference    |
-| `SafeArea.md`    | System insets padding        |
-| `ScrollView.md`  | Scrollable container         |
-| `Separator.md`   | Visual divider line          |
-| `Shape.md`       | Shape system + squircle math |
-| `Slider.md`      | Value adjustment slider      |
-| `Text.md`        | Semantic text component      |
-| `Theme.md`       | Theme composable             |
-| `Toggle.md`      | Switch / toggle              |
+| Document                  | Component                    |
+| ------------------------- | ---------------------------- |
+| `components/AppBar.md`    | Top app bar                  |
+| `components/Button.md`    | Interactive button           |
+| `components/Icon.md`      | Tinted vector icon           |
+| `components/Separator.md` | Visual divider line          |
+| `components/Slider.md`    | Value adjustment slider      |
+| `components/Text.md`      | Semantic text component      |
+| `components/Toggle.md`    | Switch / toggle              |
+| `layout/Body.md`          | Edge-to-edge root wrapper    |
+| `layout/ContentView.md`   | Android activity entry point |
+| `layout/SafeArea.md`      | System insets padding        |
+| `layout/ScrollView.md`    | Scrollable container         |
+| `layout/Theme.md`         | Theme composable             |
+| `extra/Motion.md`         | Motion language reference    |
+| `extra/Shape.md`          | Shape system + squircle math |
 
 Each document follows the structure: **Concept → API Reference → Parameters Table → Examples**.
 

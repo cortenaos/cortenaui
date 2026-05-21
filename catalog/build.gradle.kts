@@ -12,7 +12,7 @@ android {
         minSdk = 35
         targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0-alpha"
     }
 
     buildTypes {
@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":foundation"))
+    // :compose transitively brings in :foundation, :shape, and :motion via api(...).
     implementation(project(":compose"))
 
     implementation(libs.androidx.activity.compose)
