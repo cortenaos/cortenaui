@@ -7,17 +7,19 @@ package framework.cortena.ui.size
 /**
  * CortenaUI — Size Token
  *
- * Defines the five standard component size tiers used throughout CortenaUI. Components read the
- * active [SizeToken] from the theme to determine their height, padding, icon size, and other
- * dimension-related properties.
+ * Three component size tiers used throughout CortenaUI. Components read the active [SizeToken]
+ * from the theme to determine their height, padding, icon size, and other dimensions.
  *
- * [Medium] is the default tier and matches all existing hardcoded component dimensions, ensuring
- * zero breaking changes for current consumers.
+ * The three tiers are derived from a single anchor: [Medium]. [Small] is `Medium / φ` and
+ * [Large] is `Medium × φ`, where φ is the golden ratio (≈ 1.618). Anchoring at Medium keeps
+ * existing components visually stable while giving Small and Large mathematically grounded
+ * proportions.
+ *
+ * [Medium] is the default tier and matches all hardcoded component dimensions in the library,
+ * ensuring zero visual regressions for current consumers.
  */
 enum class SizeToken {
-    ExtraSmall,
     Small,
     Medium,
     Large,
-    ExtraLarge,
 }

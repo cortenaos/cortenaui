@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.typography
 
 /**
@@ -5,6 +9,10 @@ package framework.cortena.ui.typography
  *
  * Semantic typography roles. Maps [TypeScale] values to named roles that components consume.
  * Framework-agnostic data class.
+ *
+ * The role set covers four categories — Display, Headline, Title, Body — each in three tiers (Small
+ * / Medium / Large). Interactive labels (buttons, tabs, menu items) compose a base role with
+ * [TextWeight.Medium] rather than using a dedicated label tier.
  */
 data class TextStyle(
     val fontSize: Float,
@@ -41,12 +49,6 @@ data class Typography(
     val bodyLarge: TextStyle = TextStyle(TypeScale.BodyLarge, TypeScale.LineHeightBodyLarge),
     val bodyMedium: TextStyle = TextStyle(TypeScale.BodyMedium, TypeScale.LineHeightBodyMedium),
     val bodySmall: TextStyle = TextStyle(TypeScale.BodySmall, TypeScale.LineHeightBodySmall),
-    val labelLarge: TextStyle =
-        TextStyle(TypeScale.LabelLarge, TypeScale.LineHeightLabelLarge, fontWeight = 500),
-    val labelMedium: TextStyle =
-        TextStyle(TypeScale.LabelMedium, TypeScale.LineHeightLabelMedium, fontWeight = 500),
-    val labelSmall: TextStyle =
-        TextStyle(TypeScale.LabelSmall, TypeScale.LineHeightLabelSmall, fontWeight = 500),
 )
 
 /** Default typography — override per-role to customize. */

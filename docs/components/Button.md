@@ -19,6 +19,15 @@ Each style supports a `Soft` variant that reduces the background opacity, making
 - `Default`: filled background.
 - `Soft`: low-opacity background (`8–12%`), style color as foreground.
 
+### Content Scaling
+
+The `Button` content slot automatically scales with the button's `size` tier. Inside the content lambda:
+
+- Nested `Text` picks up `BodySmall` / `BodyMedium` / `BodyLarge` for `Small` / `Medium` / `Large` respectively, with `weight = TextWeight.Medium`.
+- Nested `Icon` picks up the tier's icon size from `LocalIconSize`.
+
+Both can still be overridden by passing `role`, `weight`, or `size` directly to the nested composable.
+
 ## API Reference
 
 ```kotlin
@@ -140,11 +149,11 @@ Button(
     Text("Compact")
 }
 
-// Extra large size
+// Large size
 Button(
     onClick = { },
-    size = SizeToken.ExtraLarge,
+    size = SizeToken.Large,
 ) {
-    Text("XL Action")
+    Text("Prominent")
 }
 ```

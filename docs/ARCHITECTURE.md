@@ -52,10 +52,12 @@ foundation/src/commonMain/kotlin/framework/cortena/ui/
 │   ├── DurationTokens.kt     # raw ms Long values: Fast=150, Medium=250, Slow=450
 │   └── EasingTokens.kt       # cubic-bezier coefficients as Float quartets
 ├── size/
-│   ├── SizeToken.kt          # ExtraSmall / Small / Medium / Large / ExtraLarge
-│   └── SizeScale.kt          # raw dp Float values per tier
+│   ├── GoldenRatio.kt        # φ, √φ, and ⁴√φ single-source constants
+│   ├── SizeToken.kt          # Small / Medium / Large
+│   └── SizeScale.kt          # raw dp Float values per tier (Small/Large derived from Medium via √φ)
 ├── typography/
-│   ├── TypeScale.kt          # raw sp Float values
+│   ├── TextWeight.kt         # Default / Medium / Bold
+│   ├── TypeScale.kt          # golden-ratio derived sp values (anchor BodyMedium = 16)
 │   └── Typography.kt         # semantic roles (bodyMedium, titleLarge...)
 └── spacing/
     └── Spacing.kt            # 4dp grid (Xs=4, Sm=8, Md=16...)
@@ -125,9 +127,10 @@ compose/src/commonMain/kotlin/framework/cortena/ui/
 │   └── ExperimentalComponentsApi.kt   # opt-in annotation for unstable APIs
 ├── components/
 │   ├── Button.kt            # interactive button with 5 styles, 2 variants
+│   ├── Icon.kt              # tinted ImageVector renderer that follows LocalIconSize
 │   ├── Separator.kt         # horizontal / vertical divider line
 │   ├── Slider.kt            # continuous + discrete value slider
-│   ├── Text.kt              # semantic text with 15 TextRole variants
+│   ├── Text.kt              # semantic text with 12 TextRole variants × TextWeight
 │   └── Toggle.kt            # spring-animated switch with drag + tap
 ├── graphics/
 │   └── shadow/
@@ -193,15 +196,18 @@ catalog/src/main/java/app/cortena/ui/catalog/
 
 The theme layer exposes the following `CompositionLocal` keys, each provided by the `Theme()` composable:
 
-| Key                 | Type         | Default             | Purpose                                       |
-| ------------------- | ------------ | ------------------- | --------------------------------------------- |
-| `LocalIsDark`       | `Boolean`    | `false`             | Whether the current theme is dark mode        |
-| `LocalColors`       | `Palette`    | `LightPalette`      | Semantic color roles for the active theme     |
-| `LocalContentColor` | `Color?`     | `null`              | Inherited foreground color (scoped by parent) |
-| `LocalTypography`   | `Typography` | `DefaultTypography` | Semantic text style scales                    |
-| `LocalSpacing`      | `Spacing`    | `Spacing`           | 4dp-grid spacing tokens                       |
-| `LocalSizeToken`    | `SizeToken`  | `SizeToken.Medium`  | Global component size tier                    |
-| `LocalMotion`       | `Motion`     | `DefaultMotion`     | Spring presets, duration tiers, easing curves |
+| Key                 | Type          | Default             | Purpose                                                      |
+| ------------------- | ------------- | ------------------- | ------------------------------------------------------------ |
+| `LocalIsDark`       | `Boolean`     | `false`             | Whether the current theme is dark mode                       |
+| `LocalColors`       | `Palette`     | `LightPalette`      | Semantic color roles for the active theme                    |
+| `LocalContentColor` | `Color?`      | `null`              | Inherited foreground color (scoped by parent)                |
+| `LocalTypography`   | `Typography`  | `DefaultTypography` | Semantic text style scales                                   |
+| `LocalSpacing`      | `Spacing`     | `Spacing`           | 4dp-grid spacing tokens                                      |
+| `LocalSizeToken`    | `SizeToken`   | `SizeToken.Medium`  | Global component size tier                                   |
+| `LocalMotion`       | `Motion`      | `DefaultMotion`     | Spring presets, duration tiers, easing curves                |
+| `LocalTextRole`     | `TextRole?`   | `null`              | Implicit text role propagated by sized parents (e.g. Button) |
+| `LocalTextWeight`   | `TextWeight?` | `null`              | Implicit text weight propagated by sized parents             |
+| `LocalIconSize`     | `Dp`          | `24.dp`             | Implicit icon size propagated by sized parents               |
 
 ### ThemeMode Resolution
 
@@ -268,6 +274,7 @@ Component documentation is maintained in `docs/components/` following a standard
 | `Body.md`        | Edge-to-edge root wrapper    |
 | `Button.md`      | Interactive button           |
 | `ContentView.md` | Android activity entry point |
+| `Icon.md`        | Tinted vector icon           |
 | `Motion.md`      | Motion language reference    |
 | `SafeArea.md`    | System insets padding        |
 | `ScrollView.md`  | Scrollable container         |

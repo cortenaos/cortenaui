@@ -1,52 +1,75 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2026-present The CortenaOS Project
+ */
 package framework.cortena.ui.typography
+
+import framework.cortena.ui.size.GoldenRatioSubStep
 
 /**
  * CortenaUI — Type Scale
  *
  * Font size and line height tokens. Values in raw Float (sp equivalent). Framework-agnostic —
- * Compose layer wraps these as TextUnit.
+ * the Compose layer wraps these as TextUnit.
+ *
+ * The scale is organized into four semantic categories — Display, Headline, Title, Body —
+ * each with three tiers (Small / Medium / Large). Components that need a "label" weight pick
+ * the appropriate body or title size and pass `weight = TextWeight.Medium` instead of using a
+ * separate label tier.
+ *
+ * Every size is a power of `⁴√φ` ([GoldenRatioSubStep]) times the [BodyMedium] anchor at 16sp.
+ * Tier-to-tier within a category steps by ⁴√φ; category-to-category (Body Large → Title Small)
+ * also steps by ⁴√φ, so the full scale lives on a single coherent grid. Two consecutive sub-steps
+ * equal √φ; four equal φ — so Body Medium → Title Large → Display Small triples by exact φ
+ * jumps, and the whole scale stays mathematically grounded.
+ *
+ * Line heights use the conventional `~1.4 × fontSize` ratio rather than φ, because line height
+ * driven by φ feels visually airy beyond what reads well in body copy.
  */
 object TypeScale {
 
-    // Font sizes (sp)
-    const val DisplayLarge: Float = 57f
-    const val DisplayMedium: Float = 45f
-    const val DisplaySmall: Float = 36f
+    // Anchor — every other size derives from this.
+    private const val Anchor: Float = 14f
 
-    const val HeadlineLarge: Float = 32f
-    const val HeadlineMedium: Float = 28f
-    const val HeadlineSmall: Float = 24f
+    // Powers of ⁴√φ used to walk the scale. Each increment multiplies fontSize by ⁴√φ.
+    // Total span: BodySmall (n=-1) … DisplayLarge (n=10), eleven half-steps in all.
 
-    const val TitleLarge: Float = 22f
-    const val TitleMedium: Float = 16f
-    const val TitleSmall: Float = 14f
+    // Body
+    const val BodySmall: Float = Anchor / GoldenRatioSubStep
+    const val BodyMedium: Float = Anchor
+    const val BodyLarge: Float = Anchor * GoldenRatioSubStep
 
-    const val BodyLarge: Float = 16f
-    const val BodyMedium: Float = 14f
-    const val BodySmall: Float = 12f
+    // Title — starts one sub-step above BodyLarge so categories never overlap.
+    const val TitleSmall: Float = BodyLarge * GoldenRatioSubStep
+    const val TitleMedium: Float = TitleSmall * GoldenRatioSubStep
+    const val TitleLarge: Float = TitleMedium * GoldenRatioSubStep
 
-    const val LabelLarge: Float = 14f
-    const val LabelMedium: Float = 12f
-    const val LabelSmall: Float = 11f
+    // Headline
+    const val HeadlineSmall: Float = TitleLarge * GoldenRatioSubStep
+    const val HeadlineMedium: Float = HeadlineSmall * GoldenRatioSubStep
+    const val HeadlineLarge: Float = HeadlineMedium * GoldenRatioSubStep
 
-    // Line heights (sp)
-    const val LineHeightDisplayLarge: Float = 64f
-    const val LineHeightDisplayMedium: Float = 52f
-    const val LineHeightDisplaySmall: Float = 44f
+    // Display
+    const val DisplaySmall: Float = HeadlineLarge * GoldenRatioSubStep
+    const val DisplayMedium: Float = DisplaySmall * GoldenRatioSubStep
+    const val DisplayLarge: Float = DisplayMedium * GoldenRatioSubStep
 
-    const val LineHeightHeadlineLarge: Float = 40f
-    const val LineHeightHeadlineMedium: Float = 36f
-    const val LineHeightHeadlineSmall: Float = 32f
+    // Line heights — ~1.4 × fontSize, kept manual to avoid the airy feel φ would produce.
+    private const val LineHeightFactor: Float = 1.4f
 
-    const val LineHeightTitleLarge: Float = 28f
-    const val LineHeightTitleMedium: Float = 24f
-    const val LineHeightTitleSmall: Float = 20f
+    const val LineHeightBodySmall: Float = BodySmall * LineHeightFactor
+    const val LineHeightBodyMedium: Float = BodyMedium * LineHeightFactor
+    const val LineHeightBodyLarge: Float = BodyLarge * LineHeightFactor
 
-    const val LineHeightBodyLarge: Float = 24f
-    const val LineHeightBodyMedium: Float = 20f
-    const val LineHeightBodySmall: Float = 16f
+    const val LineHeightTitleSmall: Float = TitleSmall * LineHeightFactor
+    const val LineHeightTitleMedium: Float = TitleMedium * LineHeightFactor
+    const val LineHeightTitleLarge: Float = TitleLarge * LineHeightFactor
 
-    const val LineHeightLabelLarge: Float = 20f
-    const val LineHeightLabelMedium: Float = 16f
-    const val LineHeightLabelSmall: Float = 16f
+    const val LineHeightHeadlineSmall: Float = HeadlineSmall * LineHeightFactor
+    const val LineHeightHeadlineMedium: Float = HeadlineMedium * LineHeightFactor
+    const val LineHeightHeadlineLarge: Float = HeadlineLarge * LineHeightFactor
+
+    const val LineHeightDisplaySmall: Float = DisplaySmall * LineHeightFactor
+    const val LineHeightDisplayMedium: Float = DisplayMedium * LineHeightFactor
+    const val LineHeightDisplayLarge: Float = DisplayLarge * LineHeightFactor
 }
