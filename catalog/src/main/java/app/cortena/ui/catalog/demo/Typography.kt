@@ -46,27 +46,75 @@ fun TypographyDemo() {
     }
     Text("Display", color = Color(colors.secondary), role = TextRole.TitleMedium)
     Column {
-        Text("Display Large", role = TextRole.DisplayLarge)
-        Text("Display Medium", role = TextRole.DisplayMedium)
-        Text("Display Small", role = TextRole.DisplaySmall)
+        Text(
+            "Display Large",
+            role = TextRole.DisplayLarge,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Display Medium",
+            role = TextRole.DisplayMedium,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Display Small",
+            role = TextRole.DisplaySmall,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
     }
     Text("Headline", color = Color(colors.secondary), role = TextRole.TitleMedium)
     Column {
-        Text("Headline Large", role = TextRole.HeadlineLarge)
-        Text("Headline Medium", role = TextRole.HeadlineMedium)
-        Text("Headline Small", role = TextRole.HeadlineSmall)
+        Text(
+            "Headline Large",
+            role = TextRole.HeadlineLarge,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Headline Medium",
+            role = TextRole.HeadlineMedium,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Headline Small",
+            role = TextRole.HeadlineSmall,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
     }
     Text("Title", color = Color(colors.secondary), role = TextRole.TitleMedium)
     Column {
-        Text("Title Large", role = TextRole.TitleLarge)
-        Text("Title Medium", role = TextRole.TitleMedium)
-        Text("Title Small", role = TextRole.TitleSmall)
+        Text(
+            "Title Large",
+            role = TextRole.TitleLarge,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Title Medium",
+            role = TextRole.TitleMedium,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Title Small",
+            role = TextRole.TitleSmall,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
     }
     Text("Body", color = Color(colors.secondary), role = TextRole.TitleMedium)
     Column {
-        Text("Body Large", role = TextRole.BodyLarge)
-        Text("Body Medium", role = TextRole.BodyMedium)
-        Text("Body Small", role = TextRole.BodySmall)
+        Text(
+            "Body Large",
+            role = TextRole.BodyLarge,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Body Medium",
+            role = TextRole.BodyMedium,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
+        Text(
+            "Body Small",
+            role = TextRole.BodySmall,
+            style = TextStyle(fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal),
+        )
     }
     Text("Advanced Features", color = Color(colors.secondary), role = TextRole.TitleMedium)
     Column {
