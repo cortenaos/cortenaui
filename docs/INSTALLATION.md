@@ -119,6 +119,8 @@ Direct dependencies you can declare:
 | `:motion`     | `:foundation`                      |
 | `:compose`    | `:foundation`, `:shape`, `:motion` |
 
+> Each module is a Kotlin Multiplatform publication. Always declare the artifact without a platform suffix (e.g. `compose`, not `compose-android`). Gradle reads the metadata and resolves the right variant for your target — typically the Android AAR — automatically.
+
 ## Snapshot builds
 
 There are no snapshot builds during the alpha phase. Each `0.x.0-alpha` tag is a stable point release.

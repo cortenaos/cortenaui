@@ -9,7 +9,7 @@ The shape system is split across two modules:
 
 - **`:foundation`** holds the pure-Kotlin math: `CornerStyle`, the `CornerBuilder` squircle
   solver, and the `ContinuousCurvature.emit(...)` API that streams path commands into a
-  consumer-supplied [`CornerPathReceiver`](#cornerpathreceiver). No graphics framework imports.
+  consumer-supplied [`CornerPathReceiver`](#cornerpathreceiver-foundation). No graphics framework imports.
 - **`:shape`** holds the Compose binding: the sealed `ComponentShape` hierarchy
   (`CapsuleShape`, `RoundedShape`, `UnevenShape`, `RectangleShape`), shape lerp / copy helpers,
   and the bridge that turns the foundation math into `Outline.Generic` for Compose.

@@ -5,10 +5,11 @@ on:
     branches:
       - master
     paths:
-      - '**.toml'
-      - '**.txt'
-      - 'docs/**.md'
-      - '.github/workflows/**.yml'
+      - "**.toml"
+      - "**.txt"
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,27 +19,27 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - uses: actions/configure-pages@v6
 
       - uses: actions/checkout@v6
-      
+
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
-      
+
       - run: pip install zensical
-      
+
       - run: zensical build --clean
-      
+
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
-      
+
       - uses: actions/deploy-pages@v5
         id: deployment
