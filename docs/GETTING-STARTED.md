@@ -69,18 +69,26 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-## Component References
+## References
+
+Visit the layout guides individually in the `docs/layout/` directory:
+
+- [ContentView](layout/ContentView.md)
+- [Theme](layout/Theme.md)
+- [Body](layout/Body.md)
+- [SafeArea](layout/SafeArea.md)
+- [ScrollView](layout/ScrollView.md)
 
 Visit the component guides individually in the `docs/components/` directory:
 
-- [ContentView](components/ContentView.md)
-- [Theme](components/Theme.md)
-- [Body](components/Body.md)
 - [AppBar](components/AppBar.md)
-- [SafeArea](components/SafeArea.md)
-- [ScrollView](components/ScrollView.md)
-- [Text](components/Text.md)
 - [Button](components/Button.md)
 - [Separator](components/Separator.md)
 - [Slider](components/Slider.md)
+- [Text](components/Text.md)
 - [Toggle](components/Toggle.md)
+
+Visit the extra guides individually in the `docs/extra/` directory:
+
+- [Motion](extra/Motion.md)
+- [Shape](extra/Shape.md)
