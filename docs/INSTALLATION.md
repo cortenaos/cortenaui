@@ -1,8 +1,8 @@
 # Installation
 
-CortenaUI is published to **Maven Central** under the `io.github.cortenaos` group ID. Each library module is publishable on its own, so you can pull only what you need.
+CortenaUI is published to **Maven Central** under the `io.github.cortenaui` group ID. Each library module is publishable on its own, so you can pull only what you need.
 
-> Source code lives at [github.com/cortenaos/cortenaui](https://github.com/cortenaos/cortenaui). Imports in your code stay on the `framework.cortena.ui.*` package — only the Maven coordinate uses `io.github.cortenaos`.
+> Source code lives at [github.com/cortenaui/cortenaui](https://github.com/cortenaui/cortenaui). Imports in your code stay on the `framework.cortena.ui.*` package — only the Maven coordinate uses `io.github.cortenaui`.
 
 ## Repository
 
@@ -25,7 +25,7 @@ The most common case. The `ui` artifact transitively pulls `ui-foundation`, `ui-
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.cortenaos:ui:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui:0.1.0-alpha")
 }
 ```
 
@@ -58,7 +58,7 @@ Pure Kotlin, zero dependencies. Use this if you want CortenaUI's color / size / 
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:ui-foundation:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui-foundation:0.1.0-alpha")
 }
 ```
 
@@ -75,7 +75,7 @@ Compose `Shape` adapter for CortenaUI's squircle math. Useful for adopters who w
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:ui-shape:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui-shape:0.1.0-alpha")
 }
 ```
 
@@ -91,7 +91,7 @@ Spring presets, duration tiers, and easing curves used across CortenaUI. Adopt t
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaos:ui-motion:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui-motion:0.1.0-alpha")
 }
 ```
 

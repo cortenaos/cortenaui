@@ -59,7 +59,7 @@ mavenPublishing {
                 "ScrollView, Theme, and the rest. Transitively pulls :foundation, :shape, and " +
                 ":motion via api dependencies."
         )
-        url.set("https://github.com/cortenaos/cortenaui")
+        url.set("https://github.com/cortenaui/cortenaui")
         licenses {
             license {
                 name.set("GNU General Public License v3.0")
@@ -69,15 +69,15 @@ mavenPublishing {
         }
         developers {
             developer {
-                id.set("cortenaos")
+                id.set("cortenaui")
                 name.set("The CortenaOS Project")
-                url.set("https://github.com/cortenaos")
+                url.set("https://github.com/cortenaui")
             }
         }
         scm {
-            url.set("https://github.com/cortenaos/cortenaui")
-            connection.set("scm:git:git://github.com/cortenaos/cortenaui.git")
-            developerConnection.set("scm:git:ssh://git@github.com/cortenaos/cortenaui.git")
+            url.set("https://github.com/cortenaui/cortenaui")
+            connection.set("scm:git:git://github.com/cortenaui/cortenaui.git")
+            developerConnection.set("scm:git:ssh://git@github.com/cortenaui/cortenaui.git")
         }
     }
 }

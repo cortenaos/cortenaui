@@ -2,12 +2,12 @@
 
 This document covers what a CortenaUI maintainer needs to do to ship a release. End users do not need to read this — they only need [INSTALLATION.md](INSTALLATION.md).
 
-CortenaUI publishes four artifacts to **Maven Central** under the `io.github.cortenaos` group ID:
+CortenaUI publishes four artifacts to **Maven Central** under the `io.github.cortenaui` group ID:
 
-- `io.github.cortenaos:ui-foundation`
-- `io.github.cortenaos:ui-shape`
-- `io.github.cortenaos:ui-motion`
-- `io.github.cortenaos:ui`
+- `io.github.cortenaui:ui-foundation`
+- `io.github.cortenaui:ui-shape`
+- `io.github.cortenaui:ui-motion`
+- `io.github.cortenaui:ui`
 
 The `ui` artifact is the meta-artifact users normally depend on — it transitively pulls every other module. The `ui-*` siblings let consumers cherry-pick.
 
@@ -20,7 +20,7 @@ Before the first publish, you need three things in order: a Sonatype Central Por
 ### 1. Sonatype Central Portal namespace
 
 1. Sign in at [central.sonatype.com](https://central.sonatype.com).
-2. Go to **Namespaces** and add `io.github.cortenaos`. Sonatype verifies GitHub-based namespaces automatically by reading public repositories under the `cortenaos` org. Verification takes a few minutes.
+2. Go to **Namespaces** and add `io.github.cortenaui`. Sonatype verifies GitHub-based namespaces automatically by reading public repositories under the `cortenaui` org. Verification takes a few minutes.
 3. Generate a **publishing token** under **View Account → Generate User Token**. Copy the token's username and password — you'll store them as GitHub secrets in step 3.
 
 ### 2. GPG signing key
@@ -45,7 +45,7 @@ Pick a strong passphrase when generating the key — store it alongside the key 
 
 ### 3. GitHub Actions secrets
 
-Open `https://github.com/cortenaos/cortenaui/settings/secrets/actions` and add the following four secrets, then create an environment named `maven-central` and assign the secrets to it (the publish workflow runs in that environment):
+Open `https://github.com/cortenaui/cortenaui/settings/secrets/actions` and add the following four secrets, then create an environment named `maven-central` and assign the secrets to it (the publish workflow runs in that environment):
 
 | Secret                           | Value                                                                 |
 | -------------------------------- | --------------------------------------------------------------------- |
@@ -87,7 +87,7 @@ git tag v0.1.1-alpha
 git push origin v0.1.1-alpha
 ```
 
-The tag push is what fires the Publish workflow. Watch progress at `https://github.com/cortenaos/cortenaui/actions`. The full pipeline takes around five minutes.
+The tag push is what fires the Publish workflow. Watch progress at `https://github.com/cortenaui/cortenaui/actions`. The full pipeline takes around five minutes.
 
 When the workflow finishes, head to [central.sonatype.com](https://central.sonatype.com) → **Deployments** and confirm a draft deployment is staged. Review the artifacts, then click **Publish** to release to Maven Central. Artifacts become consumable about ten to thirty minutes after the publish click.
 
@@ -121,7 +121,7 @@ dependencyResolutionManagement {
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.cortenaos:ui:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui:0.1.0-alpha")
 }
 ```
 
@@ -149,11 +149,11 @@ Before tagging, walk through this:
 - [ ] `CHANGELOG.md` updated with a section for the new version (if maintained).
 - [ ] All component docs in `docs/components/` reflect the current API.
 - [ ] `./gradlew build` passes locally.
-- [ ] `./gradlew publishToMavenLocal` succeeds and the artifacts look right under `~/.m2/repository/io/github/cortenaos/`.
+- [ ] `./gradlew publishToMavenLocal` succeeds and the artifacts look right under `~/.m2/repository/io/github/cortenaui/`.
 
 After tagging:
 
-- [ ] Workflow run is green at `https://github.com/cortenaos/cortenaui/actions`.
+- [ ] Workflow run is green at `https://github.com/cortenaui/cortenaui/actions`.
 - [ ] Deployment is visible at [central.sonatype.com](https://central.sonatype.com) → Deployments.
 - [ ] Reviewed and clicked **Publish** on the staging deployment.
 - [ ] Verified the GitHub Release page has the four AAR assets attached.
@@ -165,6 +165,6 @@ After tagging:
 
 **"Failed to verify signature" on the deployment.** The public key isn't on a keyserver Maven Central can reach, or the `SIGNING_IN_MEMORY_KEY` doesn't match the public key. Re-upload the public key with `gpg --send-keys`.
 
-**"Namespace not verified" on the deployment.** Sonatype hasn't finished verifying `io.github.cortenaos`. Wait a few minutes; if it persists, check the namespace status at [central.sonatype.com](https://central.sonatype.com) → Namespaces.
+**"Namespace not verified" on the deployment.** Sonatype hasn't finished verifying `io.github.cortenaui`. Wait a few minutes; if it persists, check the namespace status at [central.sonatype.com](https://central.sonatype.com) → Namespaces.
 
 **Dependency cycle on local publish.** Inter-module `api(project(":foundation"))` declarations can sometimes confuse `publishToMavenLocal` ordering. Run with `--no-parallel` if you hit this.
