@@ -34,7 +34,7 @@ Every element is built with a clear contract for how it responds — to touch, t
 
 ## Documentation
 
-Full documentation is available at [cortena.github.io/cortenaui](https://cortena.github.io/cortenaui).
+Full documentation is available at [cortenaui.github.io/cortenaui](https://cortenaui.github.io/cortenaui).
 
 Built with [Zensical](https://github.com/zensical/zensical).
 

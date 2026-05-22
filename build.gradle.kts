@@ -10,6 +10,6 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.cortenaos"
+    group = "io.github.cortenaui"
     version = "0.1.0-alpha"
 }

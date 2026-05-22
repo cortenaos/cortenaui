@@ -27,7 +27,7 @@ site_author = "Achmad Daniel <hello.achmaddaniel@gmail.com>"
 # The site_url is the canonical URL for your site. When building online
 # documentation you should set this.
 # Read more: https://zensical.org/docs/setup/basics/#site_url
-site_url = "https://cortenaos.github.io/cortenaui"
+site_url = "https://cortenaui.github.io/cortenaui"
 
 # The copyright notice appears in the page footer and can contain an HTML
 # fragment.
@@ -37,8 +37,8 @@ copyright = """
 Copyright &copy; 2026-present The CortenaOS Project
 """
 
-repo_url = "https://github.com/cortenaos/cortenaui"
-repo_name = "cortenaos/cortenaui"
+repo_url = "https://github.com/cortenaui/cortenaui"
+repo_name = "cortenaui/cortenaui"
 
 # Zensical supports both implicit navigation and explicitly defined navigation.
 # If you decide not to define a navigation here then Zensical will simply
