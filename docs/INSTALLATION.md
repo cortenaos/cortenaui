@@ -6,7 +6,7 @@ CortenaUI is published to **Maven Central** under the `io.github.cortenaui` grou
 
 ## Repository
 
-Maven Central is enabled by default in modern Gradle setups. If you have customised your repositories, add it back:
+Maven Central is enabled by default in modern Gradle setups. If you have customised your repositories, declare it explicitly:
 
 ```kotlin
 // settings.gradle.kts
@@ -22,28 +22,58 @@ dependencyResolutionManagement {
 
 The most common case. The `ui` artifact transitively pulls `ui-foundation`, `ui-shape`, and `ui-motion`, so you get the full component library with one dependency.
 
+The recommended pattern uses a Gradle version catalog so the version stays in one place across multi-module apps:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+cortenaui = "0.1.0-alpha"
+
+[libraries]
+cortena-ui = { module = "io.github.cortenaui:ui", version.ref = "cortenaui" }
+```
+
 ```kotlin
 // app/build.gradle.kts
+dependencies {
+    implementation(libs.cortena.ui)
+}
+```
+
+If you don't use a version catalog, the inline form works just as well:
+
+```kotlin
 dependencies {
     implementation("io.github.cortenaui:ui:0.1.0-alpha")
 }
 ```
 
-After this single line you can use the entire framework:
+After this single line you can use the entire framework. The minimal Android entry point looks like this — note the `ContentView → Body → ScrollView → SafeArea` layering, which is the canonical pattern (see [GETTING-STARTED](GETTING-STARTED.md) for a fuller walkthrough):
 
 ```kotlin
+import android.os.Bundle
+import androidx.activity.ComponentActivity
 import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.components.Toggle
+import framework.cortena.ui.layout.Body
+import framework.cortena.ui.layout.ContentView
+import framework.cortena.ui.layout.SafeArea
 import framework.cortena.ui.layout.ScrollView
-import framework.cortena.ui.theme.Theme
-import framework.cortena.ui.shape.CapsuleShape
-import framework.cortena.ui.motion.LocalMotion
 
-@Composable
-fun App() {
-    Theme {
-        Button(onClick = { }) { Text("Hello CortenaUI") }
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ContentView {
+            Body {
+                ScrollView {
+                    SafeArea {
+                        Button(onClick = { /* ... */ }) {
+                            Text("Hello CortenaUI")
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 ```
@@ -138,29 +168,65 @@ Drop them into your project's `libs/` folder if you need an offline-friendly ins
 
 ## Requirements
 
+- **Compile SDK**: 37 (Android 17) or newer. Required for the `ui` module.
 - **Min SDK**: 35 for `ui`, 21 for `ui-foundation`, `ui-shape`, and `ui-motion`.
-- **Compile SDK**: 37+.
 - **Kotlin**: 2.3+.
 - **Compose Multiplatform**: 1.10.3+.
 
-## Verifying the install
-
-After syncing, render the catalog snippet:
+The `ui` module's `compileSdk = 37` is the **minimum**, not an exact pin — newer versions are supported. If your application module currently builds against a lower SDK, bump `compileSdk` in `app/build.gradle.kts`:
 
 ```kotlin
+android {
+    compileSdk = 37  // minimum, newer is fine
+    defaultConfig {
+        minSdk = 35  // required for the ui module
+    }
+}
+```
+
+## Mixing with Material 3
+
+CortenaUI is a complete design system. Mixing it with Material 3 in the same screen produces visual inconsistencies — Material's components have their own typography, motion, and shape language that competes with Cortena's. **Pick one or the other per screen**.
+
+The catalog imports vector assets from `androidx.compose.material.icons` (e.g. `Icons.Default.Add`) and feeds them into Cortena's own `Icon` composable. That is the one safe touchpoint: Material as a vector source, never as a renderer.
+
+```kotlin
+// Recommended
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import framework.cortena.ui.components.Icon
+
+Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+```
+
+```kotlin
+// Avoid
+import androidx.compose.material3.Icon  // Material's renderer
+import androidx.compose.material3.Button // Material's component
+```
+
+## Verifying the install
+
+After syncing, the smallest sanity-check screen looks like this:
+
+```kotlin
+import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.theme.Theme
+import framework.cortena.ui.layout.Body
+import framework.cortena.ui.layout.ContentView
+import framework.cortena.ui.layout.SafeArea
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            Theme {
-                Button(onClick = { /* TODO */ }) {
-                    Text("CortenaUI is installed")
+        ContentView {
+            Body {
+                SafeArea {
+                    Button(onClick = { }) {
+                        Text("CortenaUI is installed")
+                    }
                 }
             }
         }
@@ -168,4 +234,4 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-If the button renders with the capsule shape, spring press response, and onPrimary color, you are set.
+If the button renders with the capsule shape, spring press response, and theme-aware colors — and the system bars look correctly handled (status bar icons readable, edge-to-edge layout) — the install is sound.

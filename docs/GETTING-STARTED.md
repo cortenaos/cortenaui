@@ -4,64 +4,128 @@
 
 ## Project Structure
 
-This library is divided into two main layers to ensure platform independence and a strict design language:
+CortenaUI ships as four publishable modules. Each one is independently consumable from Maven Central, and `ui` transitively pulls the other three.
 
-1. **`:foundation`**: A pure Kotlin layer with no dependencies on any UI framework. It contains raw design tokens like colors (stored as `Long` ARGB), typography sizes (`Float`), spacing (`Float`), and shape corner radii (`Float`).
-2. **`:compose`**: A Jetpack Compose implementation layer that translates tokens from `:foundation` to standard Compose UI objects (like `Color`, `.sp`, `.dp`). There are **no** dependencies on Material / Material3 here, as Cortena builds its own custom design system entirely from scratch.
+1. **`ui-foundation`** — pure Kotlin design tokens and framework-agnostic shape geometry. Zero external dependencies. Holds raw colors (`Long` ARGB), sizes (`Float`), typography (`Float` sp), motion durations (`Long` ms), and easing curves. Consumable from Compose, Android View system, and AOSP / Android.bp builds without modification.
+2. **`ui-shape`** — Compose-aware shape system. Bridges the squircle math from `ui-foundation` to the Compose `Shape` API. Provides `CapsuleShape`, `RoundedShape`, `UnevenShape`, and the `ComponentShape` hierarchy.
+3. **`ui-motion`** — spring presets, duration tiers, and easing curves used across CortenaUI. Components read motion specs through `LocalMotion` rather than constructing `spring(...)` or `tween(...)` calls inline.
+4. **`ui`** — Compose component layer (`Button`, `Slider`, `Toggle`, `Text`, `Icon`, `ScrollView`, `Theme`, etc.). Transitively pulls the three modules above.
+
+There are **no** dependencies on Material / Material3. Cortena builds its own design language entirely from scratch.
 
 ## Prerequisites
 
-Add the `:compose` module dependency (which internally includes `:foundation`) to the `build.gradle.kts` in your application module:
+CortenaUI is published to **Maven Central** under `io.github.cortenaui`. Maven Central is enabled by default in modern Gradle setups; if you have customised your repositories, make sure it is declared:
 
 ```kotlin
-implementation(project(":compose"))
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
 ```
+
+Add the dependency to your application module's `build.gradle.kts`. The recommended pattern uses a Gradle version catalog so the version stays in one place:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+cortenaui = "0.1.0-alpha"
+
+[libraries]
+cortena-ui = { module = "io.github.cortenaui:ui", version.ref = "cortenaui" }
+```
+
+```kotlin
+// app/build.gradle.kts
+dependencies {
+    implementation(libs.cortena.ui)
+}
+```
+
+If you don't use a version catalog, the inline form works too:
+
+```kotlin
+dependencies {
+    implementation("io.github.cortenaui:ui:0.1.0-alpha")
+}
+```
+
+### Build configuration
+
+CortenaUI's `ui` module targets modern Android. Your application module must compile against API 37 or newer:
+
+```kotlin
+android {
+    compileSdk = 37  // minimum, newer is fine
+    defaultConfig {
+        minSdk = 35  // required for the ui module
+    }
+}
+```
+
+For details on what each module requires and on cherry-picking individual modules, see [INSTALLATION](INSTALLATION.md).
+
+### A note on Material
+
+CortenaUI is a complete design system. Mixing it with Material 3 in the same screen produces inconsistent visuals — Material's components have their own typography, motion, and shape language that fights with Cortena's. **Use one or the other within a screen**. The catalog uses Material icons under `androidx.compose.material.icons` purely as a vector source for `Icon`; that is the only Material touchpoint we recommend.
 
 ## How to Use
 
 1. Start your user interface at the root of your `Activity` using **`ContentView`**.
-2. **`ContentView`** will automatically:
-   - Call `enableEdgeToEdge()`.
-   - Redraw the status bar color as needed.
-   - Enable status bar icons contrast detection.
-   - Wrap its content using **`Theme`**.
-3. Compose your UI using `Body`, `SafeArea`, `AppBar`, `Text`, and so on.
+2. **`ContentView`** automatically:
+   - Calls `enableEdgeToEdge()` for transparent system bars.
+   - Wraps content in **`Theme`** with the requested `themeMode`, palette, typography, fontFamily, sizeToken, and motion.
+   - Manages status bar icon contrast (`StatusBarIconMode`).
+   - Renders an optional status bar color overlay and an `appBar` slot above the main content.
+3. Inside `ContentView`, compose your screen with **`Body`** (edge-to-edge background container), **`ScrollView`** (when content can overflow), **`SafeArea`** (system insets padding), and the rest of the components.
 
-### Simple Implementation Example (Android)
+### Minimal Android example
+
+The shape below mirrors the catalog's own `MainActivity`. It is the smallest possible app that uses every layout primitive correctly:
 
 ```kotlin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.layout.AppBar
+import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.layout.Body
 import framework.cortena.ui.layout.ContentView
 import framework.cortena.ui.layout.SafeArea
-import framework.cortena.ui.theme.StatusBarIconMode
-import framework.cortena.ui.theme.ThemeMode
+import framework.cortena.ui.layout.ScrollView
+import framework.cortena.ui.theme.LocalColors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // The root of the application, automatically handles Edge-to-Edge and Theme Injector
-        ContentView(
-            appBar = {
-                AppBar(modifier = Modifier.background(Color.DarkGray)) {}
-            },
-            statusBarColor = Color.DarkGray,
-            statusBarIconMode = StatusBarIconMode.Auto, // Will automatically calculate light/dark icons
-            themeMode = ThemeMode.Auto
-        ) {
-            Body(modifier = Modifier.background(Color.Black)) {
-                SafeArea {
-                    Text(
-                        text = "Welcome to Cortena UI!",
-                        color = Color.White
-                    )
+        ContentView {
+            Body {
+                ScrollView {
+                    SafeArea {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            val colors = LocalColors.current
+                            Text(
+                                "Hello CortenaUI",
+                                color = Color(colors.primary),
+                                role = TextRole.TitleMedium,
+                            )
+                            Button(onClick = { /* ... */ }) {
+                                Text("Get started")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -69,9 +133,29 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
+`ContentView` accepts `themeMode` as a state-producer lambda (`() -> ThemeMode`) so a parent can flip the theme without recomposing the entire tree.
+
+### Adding a custom font
+
+Drop a font file into `app/src/main/res/font/` and pass it via `ContentView`:
+
+```kotlin
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+
+ContentView(
+    themeMode = { themeMode.value },
+    fontFamily = FontFamily(Font(R.font.your_font)),
+) {
+    // ...
+}
+```
+
+Every `Text` component in the tree picks up the new family automatically.
+
 ## References
 
-Visit the layout guides individually in the `docs/layout/` directory:
+Layout primitives — `docs/layout/`:
 
 - [ContentView](layout/ContentView.md)
 - [Theme](layout/Theme.md)
@@ -79,16 +163,19 @@ Visit the layout guides individually in the `docs/layout/` directory:
 - [SafeArea](layout/SafeArea.md)
 - [ScrollView](layout/ScrollView.md)
 
-Visit the component guides individually in the `docs/components/` directory:
+Components — `docs/components/`:
 
 - [AppBar](components/AppBar.md)
 - [Button](components/Button.md)
+- [Icon](components/Icon.md)
 - [Separator](components/Separator.md)
 - [Slider](components/Slider.md)
 - [Text](components/Text.md)
 - [Toggle](components/Toggle.md)
 
-Visit the extra guides individually in the `docs/extra/` directory:
+Design language — `docs/extra/`:
 
 - [Motion](extra/Motion.md)
 - [Shape](extra/Shape.md)
+
+For installation details, modular adoption, and version policy, see [INSTALLATION](INSTALLATION.md).
