@@ -13,20 +13,20 @@ Instead of literally/manually adding `padding(16.dp)` to every element (which me
 @Composable
 fun SafeArea(
     modifier: Modifier = Modifier,
-    horizontal: Dp = LocalSpacing.current.Md.dp,
-    vertical: Dp = LocalSpacing.current.None.dp,
+    horizontalPadding: Dp = LocalSpacing.current.Md.dp,
+    verticalPadding: Dp = LocalSpacing.current.None.dp,
     content: @Composable () -> Unit,
 )
 ```
 
 ### Parameters
 
-| Name         | Data Type                | Description                                                                                          |
-| ------------ | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `modifier`   | `Modifier`               | Standard Compose modifier.                                                                           |
-| `horizontal` | `Dp`                     | Padding width (left-right). Defaults to using the design token variable `Md.dp` from `LocalSpacing`. |
-| `vertical`   | `Dp`                     | Padding width (top-bottom). Defaults to `None.dp` (0 dp).                                            |
-| `content`    | `@Composable () -> Unit` | The main component inside the box.                                                                   |
+| Name                | Data Type                | Description                                                                                               |
+| ------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `modifier`          | `Modifier`               | Standard Compose modifier.                                                                                |
+| `horizontalPadding` | `Dp`                     | Horizontal padding (left-right). Defaults to using the design token variable `Md.dp` from `LocalSpacing`. |
+| `verticalPadding`   | `Dp`                     | Vertical padding (top-bottom). Defaults to `None.dp` (0 dp).                                              |
+| `content`           | `@Composable () -> Unit` | The main component inside the box.                                                                        |
 
 ### Usage
 

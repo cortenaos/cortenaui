@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.components.Text
@@ -32,7 +33,7 @@ fun ScrollViewDemo() {
     val colors = LocalColors.current
     Text("ScrollView", color = Color(colors.primary), role = TextRole.TitleMedium)
     Text(
-        "Eager scrollable container — every child is composed upfront. Pulls in CortenaUI's bounce overscroll, auto-hide indicator, and drag-to-scrub.",
+        "Eager scrollable container - every child is composed upfront. Pulls in CortenaUI's bounce overscroll, auto-hide indicator, and drag-to-scrub.",
         role = TextRole.BodySmall,
     )
     val rows = remember { List(50) { "Item #${it + 1}" } }
@@ -45,64 +46,60 @@ fun ScrollViewDemo() {
         modifier = Modifier.fillMaxWidth().height(200.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Box(
+        ScrollView(
             modifier =
                 Modifier.weight(1f)
                     .fillMaxSize()
-                    .background(Color(colors.surfaceVariant), RoundedShape(12.dp))
+                    .clip(RoundedShape(24.dp))
+                    .background(Color(colors.surfaceVariant))
         ) {
-            ScrollView(modifier = Modifier.fillMaxSize()) {
-                rows.forEach { item ->
-                    Text(
-                        item,
-                        role = TextRole.BodyMedium,
-                        modifier =
-                            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
-                    )
-                }
+            rows.forEach { item ->
+                Text(
+                    item,
+                    role = TextRole.BodyMedium,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
+                )
             }
         }
-        Box(
+        ScrollView(
             modifier =
                 Modifier.weight(1f)
                     .fillMaxSize()
-                    .background(Color(colors.surfaceVariant), RoundedShape(12.dp))
+                    .clip(RoundedShape(24.dp))
+                    .background(Color(colors.surfaceVariant))
         ) {
-            ScrollView(modifier = Modifier.fillMaxSize()) {
-                rows.forEach { item ->
-                    Text(
-                        item,
-                        role = TextRole.BodyMedium,
-                        modifier =
-                            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
-                    )
-                }
+            rows.forEach { item ->
+                Text(
+                    item,
+                    role = TextRole.BodyMedium,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
+                )
             }
         }
     }
     Text("Horizontal", role = TextRole.BodySmall, weight = TextWeight.Medium)
-    Box(
+    ScrollView(
+        orientation = Orientation.Horizontal,
         modifier =
             Modifier.fillMaxWidth()
                 .height(80.dp)
-                .background(Color(colors.surfaceVariant), RoundedShape(12.dp))
+                .clip(RoundedShape(24.dp))
+                .background(Color(colors.surfaceVariant)),
     ) {
-        ScrollView(orientation = Orientation.Horizontal, modifier = Modifier.fillMaxSize()) {
-            rows.forEachIndexed { index, _ ->
-                Box(
-                    modifier =
-                        Modifier.padding(8.dp)
-                            .size(64.dp)
-                            .background(Color(colors.primary), RoundedShape(10.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        "${index + 1}",
-                        color = Color(colors.onPrimary),
-                        role = TextRole.TitleSmall,
-                        weight = TextWeight.Bold,
-                    )
-                }
+        rows.forEachIndexed { index, _ ->
+            Box(
+                modifier =
+                    Modifier.padding(8.dp)
+                        .size(64.dp)
+                        .background(Color(colors.primary), RoundedShape(16.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "${index + 1}",
+                    color = Color(colors.onPrimary),
+                    role = TextRole.TitleSmall,
+                    weight = TextWeight.Bold,
+                )
             }
         }
     }
