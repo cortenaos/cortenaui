@@ -8,7 +8,9 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.geometry.Orientation
@@ -38,17 +41,26 @@ import framework.cortena.ui.theme.LocalColors
 import kotlinx.coroutines.launch
 
 /**
- * Where the scroll indicator sits along the cross axis. `End` is the standard placement (right edge
- * for vertical scroll, bottom for horizontal). `Start` flips it.
+ * Eager 2D grid: every cell is composed upfront, suitable for small grids where you don't need lazy
+ * composition (settings dashboards, color pickers, fixed-size icon grids, etc.). For large grids
+ * that benefit from item recycling, use [LazyGridView].
+ *
+ * Cell layout is driven by [columns]:
+ * - [GridColumns.Fixed] places a fixed number of cells per cross-axis line.
+ * - [GridColumns.Adaptive] computes the cell count from the available cross-axis size so each cell
+ *   is at least `minSize` wide.
+ *
+ * Inherits CortenaUI's bounce overscroll, auto-hiding indicator with drag-to-scrub, and threshold
+ * auto-release. Supports both vertical (default) and horizontal scrolling.
+ *
+ * Children are passed via [items], a list rendered in row-major (vertical) or column-major
+ * (horizontal) order using [itemContent].
  */
-enum class ScrollIndicatorPosition {
-    Start,
-    End,
-}
-
 @Suppress("FrequentlyChangingValue")
 @Composable
-fun ScrollView(
+fun <T> GridView(
+    items: List<T>,
+    columns: GridColumns,
     modifier: Modifier = Modifier,
 
     // Orientation
@@ -57,11 +69,12 @@ fun ScrollView(
     // Scroll Control
     scrollState: ScrollState = rememberScrollState(),
     enabled: Boolean = true,
-    reverseLayout: Boolean = false,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
 
-    // Content Padding
+    // Spacing
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    horizontalSpacing: Dp = 0.dp,
+    verticalSpacing: Dp = 0.dp,
 
     // Scroll Indicator
     showScrollIndicator: Boolean = true,
@@ -77,7 +90,7 @@ fun ScrollView(
     onScrolled: ((scrollValue: Int, maxScrollValue: Int) -> Unit)? = null,
     onReachedTop: (() -> Unit)? = null,
     onReachedBottom: (() -> Unit)? = null,
-    content: @Composable () -> Unit,
+    itemContent: @Composable (index: Int, item: T) -> Unit,
 ) {
     val safeModifier =
         modifier.then(
@@ -113,36 +126,70 @@ fun ScrollView(
     val indicatorScope = rememberCoroutineScope()
 
     Box(modifier = safeModifier) {
-        val scrollModifier =
-            if (orientation == Orientation.Vertical) {
-                Modifier.verticalScroll(
-                    state = scrollState,
-                    enabled = enabled,
-                    flingBehavior = flingBehavior,
-                    reverseScrolling = reverseLayout,
-                    overscrollEffect = overscrollEffect,
-                )
-            } else {
-                Modifier.horizontalScroll(
-                    state = scrollState,
-                    enabled = enabled,
-                    flingBehavior = flingBehavior,
-                    reverseScrolling = reverseLayout,
-                    overscrollEffect = overscrollEffect,
-                )
-            }
+        BoxWithConstraints {
+            val density = LocalDensity.current
+            val crossAxisPx =
+                if (orientation == Orientation.Vertical) constraints.maxWidth
+                else constraints.maxHeight
+            val crossAxisDp = with(density) { crossAxisPx.toDp() }
+            val resolvedCount = resolveColumnCount(columns, crossAxisDp)
 
-        if (orientation == Orientation.Vertical) {
-            Column(
-                modifier = scrollModifier.then(overscrollEffect.overscroll).padding(contentPadding)
-            ) {
-                content()
-            }
-        } else {
-            Row(
-                modifier = scrollModifier.then(overscrollEffect.overscroll).padding(contentPadding)
-            ) {
-                content()
+            val scrollModifier =
+                if (orientation == Orientation.Vertical) {
+                    Modifier.verticalScroll(
+                        state = scrollState,
+                        enabled = enabled,
+                        flingBehavior = flingBehavior,
+                        overscrollEffect = overscrollEffect,
+                    )
+                } else {
+                    Modifier.horizontalScroll(
+                        state = scrollState,
+                        enabled = enabled,
+                        flingBehavior = flingBehavior,
+                        overscrollEffect = overscrollEffect,
+                    )
+                }
+
+            if (orientation == Orientation.Vertical) {
+                Column(
+                    modifier =
+                        scrollModifier.then(overscrollEffect.overscroll).padding(contentPadding),
+                    verticalArrangement = Arrangement.spacedBy(verticalSpacing),
+                ) {
+                    items.chunked(resolvedCount).forEachIndexed { rowIndex, rowItems ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(horizontalSpacing)) {
+                            rowItems.forEachIndexed { colIndex, item ->
+                                Box(modifier = Modifier.weight(1f, fill = true)) {
+                                    itemContent(rowIndex * resolvedCount + colIndex, item)
+                                }
+                            }
+                            // Pad the trailing row so cells stay correctly aligned.
+                            repeat(resolvedCount - rowItems.size) {
+                                Box(modifier = Modifier.weight(1f, fill = true))
+                            }
+                        }
+                    }
+                }
+            } else {
+                Row(
+                    modifier =
+                        scrollModifier.then(overscrollEffect.overscroll).padding(contentPadding),
+                    horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
+                ) {
+                    items.chunked(resolvedCount).forEachIndexed { colIndex, colItems ->
+                        Column(verticalArrangement = Arrangement.spacedBy(verticalSpacing)) {
+                            colItems.forEachIndexed { rowIndex, item ->
+                                Box(modifier = Modifier.weight(1f, fill = true)) {
+                                    itemContent(colIndex * resolvedCount + rowIndex, item)
+                                }
+                            }
+                            repeat(resolvedCount - colItems.size) {
+                                Box(modifier = Modifier.weight(1f, fill = true))
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -184,3 +231,12 @@ fun ScrollView(
         }
     }
 }
+
+private fun resolveColumnCount(columns: GridColumns, crossAxis: Dp): Int =
+    when (columns) {
+        is GridColumns.Fixed -> columns.count
+        is GridColumns.Adaptive -> {
+            val raw = (crossAxis / columns.minSize).toInt()
+            raw.coerceAtLeast(1)
+        }
+    }

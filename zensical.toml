@@ -58,7 +58,7 @@ nav = [
   },
   {
     "Components" = [
-      { "Layout" = [ "layout/ContentView.md", "layout/Theme.md", "layout/Body.md", "layout/SafeArea.md", "layout/ScrollView.md" ] },
+      { "Layout" = [ "layout/ContentView.md", "layout/Theme.md", "layout/Body.md", "layout/SafeArea.md", "layout/ScrollView.md", "layout/LazyScrollView.md", "layout/GridView.md", "layout/LazyGridView.md" ] },
       { "Component" = [ "components/AppBar.md", "components/Button.md", "components/Icon.md", "components/Separator.md", "components/Slider.md", "components/Text.md", "components/Toggle.md" ] },
       { "Extra" = [ "extra/Motion.md", "extra/Shape.md" ] },
     ]
