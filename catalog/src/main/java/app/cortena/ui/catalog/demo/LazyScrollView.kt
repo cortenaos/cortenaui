@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,8 @@ fun LazyScrollViewDemo() {
                     modifier =
                         Modifier.padding(8.dp)
                             .size(64.dp)
-                            .background(Color(colors.primary), RoundedShape(8.dp))
+                            .background(Color(colors.primary), RoundedShape(10.dp)),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         Text(

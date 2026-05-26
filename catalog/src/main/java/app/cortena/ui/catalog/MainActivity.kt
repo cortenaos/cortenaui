@@ -22,6 +22,7 @@ import app.cortena.ui.catalog.demo.ColorDemo
 import app.cortena.ui.catalog.demo.GridViewDemo
 import app.cortena.ui.catalog.demo.LazyGridViewDemo
 import app.cortena.ui.catalog.demo.LazyScrollViewDemo
+import app.cortena.ui.catalog.demo.ScrollViewDemo
 import app.cortena.ui.catalog.demo.SliderDemo
 import app.cortena.ui.catalog.demo.ToggleDemo
 import app.cortena.ui.catalog.demo.TypographyDemo
@@ -89,6 +90,8 @@ class MainActivity : ComponentActivity() {
                             SliderDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
                             ToggleDemo()
+                            Separator(modifier = Modifier.padding(vertical = 12.dp))
+                            ScrollViewDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
                             LazyScrollViewDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
