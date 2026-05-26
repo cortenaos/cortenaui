@@ -2,21 +2,6 @@
 
 `ScrollView` is Cortena's scrollable container with bounce overscroll and a smart scroll indicator that auto-hides, animates, and supports direct dragging.
 
-!!! warning "Known Limitation With ScrollView"
-
-    Currently, if you wish to use `SafeArea` & `ScrollView` composables together. you need to wrapper the SafeView inside ScrollView,
-    otherwise thier are very wired quirks with the placement of scrollbars.
-
-    We know its unintuative and are currently trying to fix it.
-
-    ```kotlin
-    ScrollView {
-        SafeArea {
-            ...
-        }
-    }
-    ```
-
 ## Concept
 
 `ScrollView` wraps content in a scrollable region that supports both vertical and horizontal orientations. When the user scrolls past the edges, the content bounces with a spring-back animation instead of the default Android glow/stretch effect. Pulling the overscroll past a threshold while still holding triggers an auto-release that springs the content back on its own.
