@@ -26,7 +26,6 @@ import framework.cortena.ui.typography.TextWeight
 fun LazyScrollViewDemo() {
     val colors = LocalColors.current
     Text("LazyScrollView", color = Color(colors.primary), role = TextRole.TitleMedium)
-
     Text("Vertical lazy list - only visible items are composed.", role = TextRole.BodySmall)
     Box(
         modifier =
@@ -60,7 +59,6 @@ fun LazyScrollViewDemo() {
             }
         }
     }
-
     Text("Horizontal lazy row - same DSL, different orientation.", role = TextRole.BodySmall)
     Box(
         modifier =
