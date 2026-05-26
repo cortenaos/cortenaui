@@ -147,8 +147,12 @@ compose/src/commonMain/kotlin/framework/cortena/ui/
 ├── layout/
 │   ├── AppBar.kt            # top app bar slot
 │   ├── Body.kt              # edge-to-edge root wrapper
+│   ├── GridColumns.kt       # sealed class — Fixed / Adaptive
+│   ├── GridView.kt          # eager 2D grid
+│   ├── LazyGridView.kt      # lazy 2D grid (LazyVerticalGrid / LazyHorizontalGrid wrapper)
+│   ├── LazyScrollView.kt    # lazy 1D list (LazyColumn / LazyRow wrapper)
 │   ├── SafeArea.kt          # system insets padding
-│   └── ScrollView.kt        # scrollable container with bounce overscroll, auto-hiding and draggable indicator
+│   └── ScrollView.kt        # eager scrollable container with bounce overscroll
 └── theme/
     ├── ColorExtensions.kt         # ColorToken.value() helpers
     ├── LocalProviders.kt          # CompositionLocal definitions
@@ -268,22 +272,25 @@ The `componentShadow` modifier renders drop shadows that remain visible during s
 
 Component documentation is maintained in `docs/components/` following a standardized format:
 
-| Document                  | Component                    |
-| ------------------------- | ---------------------------- |
-| `components/AppBar.md`    | Top app bar                  |
-| `components/Button.md`    | Interactive button           |
-| `components/Icon.md`      | Tinted vector icon           |
-| `components/Separator.md` | Visual divider line          |
-| `components/Slider.md`    | Value adjustment slider      |
-| `components/Text.md`      | Semantic text component      |
-| `components/Toggle.md`    | Switch / toggle              |
-| `layout/Body.md`          | Edge-to-edge root wrapper    |
-| `layout/ContentView.md`   | Android activity entry point |
-| `layout/SafeArea.md`      | System insets padding        |
-| `layout/ScrollView.md`    | Scrollable container         |
-| `layout/Theme.md`         | Theme composable             |
-| `extra/Motion.md`         | Motion language reference    |
-| `extra/Shape.md`          | Shape system + squircle math |
+| Document                   | Component                    |
+| -------------------------- | ---------------------------- |
+| `components/AppBar.md`     | Top app bar                  |
+| `components/Button.md`     | Interactive button           |
+| `components/Icon.md`       | Tinted vector icon           |
+| `components/Separator.md`  | Visual divider line          |
+| `components/Slider.md`     | Value adjustment slider      |
+| `components/Text.md`       | Semantic text component      |
+| `components/Toggle.md`     | Switch / toggle              |
+| `layout/Body.md`           | Edge-to-edge root wrapper    |
+| `layout/ContentView.md`    | Android activity entry point |
+| `layout/GridView.md`       | Eager 2D grid                |
+| `layout/LazyGridView.md`   | Lazy 2D grid                 |
+| `layout/LazyScrollView.md` | Lazy 1D scrollable list      |
+| `layout/SafeArea.md`       | System insets padding        |
+| `layout/ScrollView.md`     | Eager scrollable container   |
+| `layout/Theme.md`          | Theme composable             |
+| `extra/Motion.md`          | Motion language reference    |
+| `extra/Shape.md`           | Shape system + squircle math |
 
 Each document follows the structure: **Concept → API Reference → Parameters Table → Examples**.
 

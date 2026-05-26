@@ -162,6 +162,9 @@ Layout primitives — `docs/layout/`:
 - [Body](layout/Body.md)
 - [SafeArea](layout/SafeArea.md)
 - [ScrollView](layout/ScrollView.md)
+- [LazyScrollView](layout/LazyScrollView.md)
+- [GridView](layout/GridView.md)
+- [LazyGridView](layout/LazyGridView.md)
 
 Components — `docs/components/`:
 
