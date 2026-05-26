@@ -12,13 +12,15 @@ import framework.cortena.ui.theme.LocalSpacing
 @Composable
 fun SafeArea(
     modifier: Modifier = Modifier,
-    horizontal: Dp = LocalSpacing.current.Md.dp, // 16dp
-    vertical: Dp = LocalSpacing.current.None.dp, // 0dp
+    horizontalPadding: Dp = LocalSpacing.current.Md.dp, // default: 16dp
+    verticalPadding: Dp = LocalSpacing.current.None.dp, // default: 0dp
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier =
-            modifier.safeDrawingPadding().padding(horizontal = horizontal, vertical = vertical)
+            modifier
+                .safeDrawingPadding()
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
     ) {
         content()
     }
