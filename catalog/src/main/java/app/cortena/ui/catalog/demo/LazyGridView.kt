@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -16,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.components.Text
@@ -40,34 +40,31 @@ fun LazyGridViewDemo() {
         role = TextRole.BodySmall,
         weight = TextWeight.Medium,
     )
-    Box(
+    LazyGridView(
+        columns = GridColumns.Adaptive(minSize = 80.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(8.dp),
         modifier =
             Modifier.fillMaxWidth()
                 .height(280.dp)
-                .background(Color(colors.surfaceVariant), RoundedShape(12.dp))
+                .clip(RoundedShape(24.dp))
+                .background(Color(colors.surfaceVariant)),
     ) {
-        LazyGridView(
-            columns = GridColumns.Adaptive(minSize = 80.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp),
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            items((1..200).toList()) { value ->
-                Box(
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .height(72.dp)
-                            .background(Color(colors.primary), RoundedShape(10.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        "$value",
-                        color = Color(colors.onPrimary),
-                        role = TextRole.TitleSmall,
-                        weight = TextWeight.Bold,
-                    )
-                }
+        items((1..200).toList()) { value ->
+            Box(
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .height(72.dp)
+                        .background(Color(colors.primary), RoundedShape(16.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "$value",
+                    color = Color(colors.onPrimary),
+                    role = TextRole.TitleSmall,
+                    weight = TextWeight.Bold,
+                )
             }
         }
     }
@@ -76,35 +73,32 @@ fun LazyGridViewDemo() {
         role = TextRole.BodySmall,
         weight = TextWeight.Medium,
     )
-    Box(
+    LazyGridView(
+        columns = GridColumns.Fixed(3),
+        orientation = Orientation.Horizontal,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(8.dp),
         modifier =
             Modifier.fillMaxWidth()
                 .height(220.dp)
-                .background(Color(colors.surfaceVariant), RoundedShape(12.dp))
+                .clip(RoundedShape(24.dp))
+                .background(Color(colors.surfaceVariant)),
     ) {
-        LazyGridView(
-            columns = GridColumns.Fixed(3),
-            orientation = Orientation.Horizontal,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp),
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            items((1..201).toList()) { value ->
-                Box(
-                    modifier =
-                        Modifier.width(56.dp)
-                            .height(56.dp)
-                            .background(Color(colors.accent), RoundedShape(10.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        "$value",
-                        color = Color(colors.onAccent),
-                        role = TextRole.TitleSmall,
-                        weight = TextWeight.Bold,
-                    )
-                }
+        items((1..201).toList()) { value ->
+            Box(
+                modifier =
+                    Modifier.width(56.dp)
+                        .height(56.dp)
+                        .background(Color(colors.accent), RoundedShape(16.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "$value",
+                    color = Color(colors.onAccent),
+                    role = TextRole.TitleSmall,
+                    weight = TextWeight.Bold,
+                )
             }
         }
     }
