@@ -25,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.isSpecified
@@ -135,7 +136,7 @@ fun LazyScrollView(
     Box(modifier = safeModifier) {
         if (orientation == Orientation.Vertical) {
             LazyColumn(
-                modifier = overscrollEffect.overscroll,
+                modifier = Modifier.clipToBounds().then(overscrollEffect.overscroll),
                 state = state,
                 contentPadding = contentPadding,
                 reverseLayout = reverseLayout,
@@ -148,7 +149,7 @@ fun LazyScrollView(
             )
         } else {
             LazyRow(
-                modifier = overscrollEffect.overscroll,
+                modifier = Modifier.clipToBounds().then(overscrollEffect.overscroll),
                 state = state,
                 contentPadding = contentPadding,
                 reverseLayout = reverseLayout,

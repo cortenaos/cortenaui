@@ -23,6 +23,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.isSpecified
@@ -109,7 +110,7 @@ fun LazyGridView(
         if (orientation == Orientation.Vertical) {
             LazyVerticalGrid(
                 columns = cells,
-                modifier = overscrollEffect.overscroll,
+                modifier = Modifier.clipToBounds().then(overscrollEffect.overscroll),
                 state = state,
                 contentPadding = contentPadding,
                 reverseLayout = reverseLayout,
@@ -123,7 +124,7 @@ fun LazyGridView(
         } else {
             LazyHorizontalGrid(
                 rows = cells,
-                modifier = overscrollEffect.overscroll,
+                modifier = Modifier.clipToBounds().then(overscrollEffect.overscroll),
                 state = state,
                 contentPadding = contentPadding,
                 reverseLayout = reverseLayout,
