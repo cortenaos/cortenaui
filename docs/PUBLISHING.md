@@ -11,7 +11,7 @@ CortenaUI publishes four artifacts to **Maven Central** under the `io.github.cor
 
 The `ui` artifact is the meta-artifact users normally depend on — it transitively pulls every other module. The `ui-*` siblings let consumers cherry-pick.
 
-Publishing is automated through the `Publish` GitHub Actions workflow. Pushing a tag of the form `v<version>` (for example `v0.1.0-alpha`) triggers a build, signs every artifact, uploads them to Maven Central, and attaches the per-module AARs to a GitHub Release.
+Publishing is automated through the `Publish` GitHub Actions workflow. Pushing a tag of the form `v<version>` (for example `v0.2.0-alpha`) triggers a build, signs every artifact, uploads them to Maven Central, and attaches the per-module AARs to a GitHub Release.
 
 ## One-time setup
 
@@ -121,7 +121,7 @@ dependencyResolutionManagement {
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.cortenaui:ui:0.1.0-alpha")
+    implementation("io.github.cortenaui:ui:0.2.0-alpha")
 }
 ```
 
