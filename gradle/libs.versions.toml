@@ -2,20 +2,18 @@
 activityCompose = "1.13.0"
 agp = "9.2.1"
 compose = "1.11.0"
+icons = "1.0.0"
 jetbrainsKotlinJvm = "2.3.21"
-icons = "1.7.8"
 kotlin = "2.3.21"
-material3 = "1.4.0"
 mavenPublish = "0.36.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "icons" }
 compose-animation-core = { module = "org.jetbrains.compose.animation:animation-core", version.ref = "compose" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+cortena-icons-phosphor = { module = "io.github.cortenaui:phosphor_icons", version.ref = "icons" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

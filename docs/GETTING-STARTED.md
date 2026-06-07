@@ -70,7 +70,23 @@ For details on what each module requires and on cherry-picking individual module
 
 ### A note on Material
 
-CortenaUI is a complete design system. Mixing it with Material 3 in the same screen produces inconsistent visuals — Material's components have their own typography, motion, and shape language that fights with Cortena's. **Use one or the other within a screen**. The catalog uses Material icons under `androidx.compose.material.icons` purely as a vector source for `Icon`; that is the only Material touchpoint we recommend.
+CortenaUI is a complete design system. Mixing it with Material 3 in the same screen produces inconsistent visuals — Material's components have their own typography, motion, and shape language that fights with Cortena's. **Use one or the other within a screen**. There are zero Material dependencies in CortenaUI.
+
+### Icons
+
+We recommend using the official `cortenaui-phosphor-icons` library which integrates natively with CortenaUI's `Icon` component.
+
+```toml
+# gradle/libs.versions.toml
+cortena-icons-phosphor = { module = "io.github.cortenaui:phosphor_icons", version.ref = "cortenaui" }
+```
+
+```kotlin
+// app/build.gradle.kts
+dependencies {
+    implementation(libs.cortena.icons.phosphor)
+}
+```
 
 ## How to Use
 

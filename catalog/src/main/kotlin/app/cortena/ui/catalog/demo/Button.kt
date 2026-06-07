@@ -7,10 +7,6 @@ package app.cortena.ui.catalog.demo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import framework.cortena.icons.PhosphorIcon
+import framework.cortena.icons.PhosphorIcons
 import framework.cortena.ui.color.ColorToken
 import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.ButtonStyle
@@ -79,7 +77,7 @@ fun ButtonDemo() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Button(enabled = enable, background = ColorToken.Blue500.value()) {
             Icon(
-                imageVector = Icons.Default.Favorite,
+                renderer = PhosphorIcon(PhosphorIcons.Fill.Heart),
                 contentDescription = "Favorite icon",
                 tint = ColorToken.Blue50.value(),
             )
@@ -88,14 +86,14 @@ fun ButtonDemo() {
         Button(enabled = enable, background = ColorToken.Green600.value()) { Text("Green") }
         Button(enabled = enable, iconOnly = true, background = ColorToken.Orange500.value()) {
             Icon(
-                imageVector = Icons.Default.Add,
+                renderer = PhosphorIcon(PhosphorIcons.Regular.Plus),
                 contentDescription = "Add icon",
                 tint = Color.White,
             )
         }
         Button(enabled = enable, iconOnly = true, background = ColorToken.Pink500.value()) {
             Icon(
-                imageVector = Icons.Default.Edit,
+                renderer = PhosphorIcon(PhosphorIcons.Regular.PencilSimple),
                 contentDescription = "Edit icon",
                 tint = Color.White,
             )
@@ -118,21 +116,21 @@ fun ButtonDemo() {
     ) {
         Button(enabled = enable, iconOnly = true, size = SizeToken.Small) {
             Icon(
-                imageVector = Icons.Default.Add,
+                renderer = PhosphorIcon(PhosphorIcons.Regular.Plus),
                 contentDescription = "Add icon",
                 tint = Color.White,
             )
         }
         Button(enabled = enable, iconOnly = true, size = SizeToken.Medium) {
             Icon(
-                imageVector = Icons.Default.Add,
+                renderer = PhosphorIcon(PhosphorIcons.Regular.Plus),
                 contentDescription = "Add icon",
                 tint = Color.White,
             )
         }
         Button(enabled = enable, iconOnly = true, size = SizeToken.Large) {
             Icon(
-                imageVector = Icons.Default.Add,
+                renderer = PhosphorIcon(PhosphorIcons.Regular.Plus),
                 contentDescription = "Add icon",
                 tint = Color.White,
             )
