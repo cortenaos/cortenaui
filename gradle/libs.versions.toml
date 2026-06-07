@@ -3,8 +3,8 @@ activityCompose = "1.13.0"
 agp = "9.2.1"
 compose = "1.11.0"
 icons = "1.0.0"
-jetbrainsKotlinJvm = "2.3.21"
-kotlin = "2.3.21"
+jetbrainsKotlinJvm = "2.4.0"
+kotlin = "2.4.0"
 mavenPublish = "0.36.0"
 
 [libraries]
