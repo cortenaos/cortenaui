@@ -37,9 +37,8 @@ dependencies {
     implementation(project(":compose"))
 
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.compose.foundation)
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
+    implementation(libs.cortena.icons)
 }

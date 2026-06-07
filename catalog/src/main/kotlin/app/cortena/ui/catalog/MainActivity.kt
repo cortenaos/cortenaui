@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import app.cortena.ui.catalog.demo.ButtonDemo
 import app.cortena.ui.catalog.demo.ColorDemo
 import app.cortena.ui.catalog.demo.GridViewDemo
+import app.cortena.ui.catalog.demo.IconDemo
 import app.cortena.ui.catalog.demo.LazyGridViewDemo
 import app.cortena.ui.catalog.demo.LazyScrollViewDemo
 import app.cortena.ui.catalog.demo.ScrollViewDemo
@@ -86,6 +87,8 @@ class MainActivity : ComponentActivity() {
                             TypographyDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
                             ButtonDemo()
+                            Separator(modifier = Modifier.padding(vertical = 12.dp))
+                            IconDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
                             SliderDemo()
                             Separator(modifier = Modifier.padding(vertical = 12.dp))
