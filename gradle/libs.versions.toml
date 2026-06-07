@@ -13,7 +13,7 @@ compose-animation-core = { module = "org.jetbrains.compose.animation:animation-c
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
-cortena-icons-phosphor = { module = "io.github.cortenaui:phosphor_icons", version.ref = "icons" }
+cortena-icons = { module = "io.github.cortenaui:phosphor_icons", version.ref = "icons" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

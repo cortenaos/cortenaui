@@ -40,5 +40,5 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
-    implementation(libs.cortena.icons.phosphor)
+    implementation(libs.cortena.icons)
 }
