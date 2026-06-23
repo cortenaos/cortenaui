@@ -63,18 +63,22 @@ jobs:
       - name: Assemble release AARs for GitHub Release
         run: ./gradlew :foundation:assemble :shape:assemble :motion:assemble :compose:assemble --stacktrace
 
-      - name: Collect AARs
+      - name: Assemble catalog release APK
+        run: ./gradlew :catalog:assembleRelease --stacktrace
+
+      - name: Collect release artifacts
         run: |
           mkdir -p release-artifacts
           cp foundation/build/outputs/aar/foundation.aar release-artifacts/ui-foundation-${{ steps.version.outputs.value }}.aar
           cp shape/build/outputs/aar/shape.aar release-artifacts/ui-shape-${{ steps.version.outputs.value }}.aar
           cp motion/build/outputs/aar/motion.aar release-artifacts/ui-motion-${{ steps.version.outputs.value }}.aar
           cp compose/build/outputs/aar/compose.aar release-artifacts/ui-${{ steps.version.outputs.value }}.aar
+          cp catalog/build/outputs/apk/release/catalog-release.apk release-artifacts/catalog-${{ steps.version.outputs.value }}.apk
           ls -la release-artifacts
 
-      - name: Attach AARs to GitHub Release
+      - name: Attach artifacts to GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: release-artifacts/*.aar
+          files: release-artifacts/*
           generate_release_notes: true
