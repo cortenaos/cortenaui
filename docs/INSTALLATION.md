@@ -27,7 +27,7 @@ The recommended pattern uses a Gradle version catalog so the version stays in on
 ```toml
 # gradle/libs.versions.toml
 [versions]
-cortenaui = "0.2.0-alpha"
+cortenaui = "0.3.0-alpha"
 
 [libraries]
 cortena-ui = { module = "io.github.cortenaui:ui", version.ref = "cortenaui" }
@@ -44,7 +44,7 @@ If you don't use a version catalog, the inline form works just as well:
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaui:ui:0.2.0-alpha")
+    implementation("io.github.cortenaui:ui:0.3.0-alpha")
 }
 ```
 
@@ -88,7 +88,7 @@ Pure Kotlin, zero dependencies. Use this if you want CortenaUI's color / size / 
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaui:ui-foundation:0.2.0-alpha")
+    implementation("io.github.cortenaui:ui-foundation:0.3.0-alpha")
 }
 ```
 
@@ -105,7 +105,7 @@ Compose `Shape` adapter for CortenaUI's squircle math. Useful for adopters who w
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaui:ui-shape:0.2.0-alpha")
+    implementation("io.github.cortenaui:ui-shape:0.3.0-alpha")
 }
 ```
 
@@ -121,7 +121,7 @@ Spring presets, duration tiers, and easing curves used across CortenaUI. Adopt t
 
 ```kotlin
 dependencies {
-    implementation("io.github.cortenaui:ui-motion:0.2.0-alpha")
+    implementation("io.github.cortenaui:ui-motion:0.3.0-alpha")
 }
 ```
 

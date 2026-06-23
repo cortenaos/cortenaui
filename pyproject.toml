@@ -1,6 +1,6 @@
 [project]
 name = "cortenaui"
-version = "0.2.0-alpha"
+version = "0.3.0-alpha"
 description = "Modular UI components for Jetpack Compose"
 readme = "README.md"
 requires-python = ">=3.14"
