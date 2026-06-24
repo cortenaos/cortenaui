@@ -11,7 +11,7 @@ CortenaUI publishes four artifacts to **Maven Central** under the `io.github.cor
 
 The `ui` artifact is the meta-artifact users normally depend on — it transitively pulls every other module. The `ui-*` siblings let consumers cherry-pick.
 
-Publishing is automated through the `Publish` GitHub Actions workflow. Pushing a tag of the form `v<version>` (for example `v0.3.0-alpha`) triggers a build, signs every artifact, uploads them to Maven Central, and attaches the per-module AARs to a GitHub Release.
+Publishing is automated through the `Publish` GitHub Actions workflow. Pushing a tag of the form `v<version>` (for example `v0.3.0-alpha`) triggers a build, signs every artifact, uploads them to Maven Central, and attaches the per-module AARs and the catalog showcase APK to a GitHub Release.
 
 ## One-time setup
 
@@ -91,7 +91,7 @@ The tag push is what fires the Publish workflow. Watch progress at `https://gith
 
 When the workflow finishes, head to [central.sonatype.com](https://central.sonatype.com) → **Deployments** and confirm a draft deployment is staged. Review the artifacts, then click **Publish** to release to Maven Central. Artifacts become consumable about ten to thirty minutes after the publish click.
 
-A GitHub Release is also created automatically, with the four AARs attached as assets and release notes generated from commit history.
+A GitHub Release is also created automatically, with the four AARs and the catalog showcase APK attached as assets and release notes generated from commit history.
 
 ## Local testing before tagging
 
@@ -156,7 +156,7 @@ After tagging:
 - [ ] Workflow run is green at `https://github.com/cortenaui/cortenaui/actions`.
 - [ ] Deployment is visible at [central.sonatype.com](https://central.sonatype.com) → Deployments.
 - [ ] Reviewed and clicked **Publish** on the staging deployment.
-- [ ] Verified the GitHub Release page has the four AAR assets attached.
+- [ ] Verified the GitHub Release page has the four AAR assets and the catalog APK attached.
 - [ ] Smoke-tested in a fresh consumer project after Maven Central indexes the artifacts.
 
 ## Troubleshooting

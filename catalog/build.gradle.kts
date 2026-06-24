@@ -23,6 +23,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            // Sign with debug key so CI can produce a distributable APK without
+            // a dedicated release keystore. The catalog is a showcase app, not a
+            // production release, so debug signing is acceptable.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
