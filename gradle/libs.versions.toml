@@ -5,7 +5,7 @@ compose = "1.11.1"
 icons = "1.0.0"
 jetbrainsKotlinJvm = "2.4.0"
 kotlin = "2.4.0"
-mavenPublish = "0.36.0"
+mavenPublish = "0.37.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
