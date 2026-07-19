@@ -4,7 +4,7 @@ agp = "9.2.1"
 compose = "1.11.1"
 icons = "1.0.0"
 jetbrainsKotlinJvm = "2.4.0"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 mavenPublish = "0.37.0"
 
 [libraries]
