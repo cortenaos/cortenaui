@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.13.0"
-agp = "9.2.1"
+agp = "9.3.0"
 compose = "1.11.1"
 icons = "1.0.0"
 jetbrainsKotlinJvm = "2.4.10"
