@@ -22,7 +22,7 @@ import framework.cortena.ui.theme.LocalContentColor
 import framework.cortena.ui.theme.LocalIconSize
 
 /**
- * CortenaUI � Icon
+ * CortenaUI - Icon
  *
  * Renders an [ImageVector] as a tinted icon with a default size resolved from [LocalIconSize]. When
  * this composable is used inside a sized component scope (for example a [Button] content slot), the
@@ -78,7 +78,7 @@ typealias IconRenderer =
     ) -> Unit
 
 /**
- * CortenaUI � Icon (renderer overload)
+ * CortenaUI - Icon (renderer overload)
  *
  * Renders an icon using an [IconRenderer] lambda instead of an [ImageVector]. This overload lets
  * external icon packs (like Phosphor Icons) plug into CortenaUI's Icon component while CortenaUI
