@@ -3,7 +3,7 @@
 ## Concept
 
 `ListView` is a card-like container that groups a set of `ListItem` rows into a rounded, visually
-distinct section — similar to the grouped list style found in iOS Settings pages.
+distinct section.
 
 Items are registered through a scope builder — call `item { }` inside the `content` lambda for each row.
 
