@@ -57,13 +57,10 @@ fun ListViewDemo() {
                     "Label" to Color(0xFF757575),
                     "Fill" to Color(0xFFE0E0E0),
                 )
-            secondaryColors.forEach { (name, color) ->
+            secondaryColors.forEach { (name) ->
                 item {
                     ListItem(
                         title = { Text(name, role = TextRole.BodyMedium) },
-                        leading = {
-                            Box(modifier = Modifier.size(24.dp).clip(CircleShape).background(color))
-                        },
                     )
                 }
             }

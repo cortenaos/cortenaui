@@ -32,33 +32,14 @@ interface ListViewScope {
 | ---------- | --------------- | ---------- | ---------------------------------------------------- |
 | `modifier` | `Modifier`      | `Modifier` | Standard Compose modifier.                           |
 | `title`    | `String?`       | `null`     | Optional section header (rendered uppercase).        |
-| `content`  | `ListViewScope` | —          | Scope builder. Call `item { }` to register each row. |
+| `content`  | `ListViewScope` | -          | Scope builder. Call `item { }` to register each row. |
 
 ## Examples
 
-### Basic grouped list
+### With leading icons
 
 ```kotlin
 ListView(title = "Colors") {
-    item {
-        ListItem(
-            title = { Text("Red", role = TextRole.BodyMedium) },
-            leading = { Box(modifier = Modifier.size(24.dp).clip(CircleShape).background(Color.Red)) },
-        )
-    }
-    item {
-        ListItem(
-            title = { Text("Blue", role = TextRole.BodyMedium) },
-            leading = { Box(modifier = Modifier.size(24.dp).clip(CircleShape).background(Color.Blue)) },
-        )
-    }
-}
-```
-
-### Programmatic item generation
-
-```kotlin
-ListView(title = "FANCY") {
     colors.forEach { (name, color) ->
         item {
             ListItem(
@@ -68,6 +49,22 @@ ListView(title = "FANCY") {
                 },
             )
         }
+    }
+}
+```
+
+### Without leading
+
+```kotlin
+ListView(title = "Settings") {
+    item {
+        ListItem(title = { Text("Notifications", role = TextRole.BodyMedium) })
+    }
+    item {
+        ListItem(title = { Text("Privacy", role = TextRole.BodyMedium) })
+    }
+    item {
+        ListItem(title = { Text("About", role = TextRole.BodyMedium) })
     }
 }
 ```

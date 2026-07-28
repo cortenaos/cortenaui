@@ -45,6 +45,10 @@ fun ListItem(
     onClick: (() -> Unit)? = null,
 ) {
     val colors = LocalColors.current
+
+    // Report leading presence to ListView's tracker (if inside a ListView)
+    LocalListItemLeadingTracker.current?.let { it.hasLeading = leading != null }
+
     Row(
         modifier =
             modifier
