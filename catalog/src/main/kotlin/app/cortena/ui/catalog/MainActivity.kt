@@ -56,6 +56,9 @@ class MainActivity : ComponentActivity() {
                 override val canGoBack: Boolean
                     get() = pageState.value != null
 
+                override val previousTitle: String?
+                    get() = if (pageState.value != null) "Catalog" else null
+
                 override fun pop() {
                     pageState.value = null
                 }

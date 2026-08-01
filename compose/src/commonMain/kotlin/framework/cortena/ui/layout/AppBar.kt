@@ -26,9 +26,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import framework.cortena.ui.annotation.ExperimentalComponentsApi
 import framework.cortena.ui.components.Icon
+import framework.cortena.ui.components.Button
+import framework.cortena.ui.components.ButtonStyle
+import framework.cortena.ui.components.ButtonVariant
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.navigation.LocalNavigator
+import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.typography.TextWeight
 
@@ -102,17 +106,22 @@ fun AppBar(
             verticalAlignment = UiAlignment.CenterVertically
         ) {
             if (navigator?.canGoBack == true) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable(role = Role.Button) { navigator.pop() },
-                    contentAlignment = UiAlignment.Center
+                Button(
+                    onClick = { navigator.pop() },
+                    variant = ButtonVariant.Soft,
+                    style = ButtonStyle.Primary,
+                    size = SizeToken.Small,
                 ) {
                     Icon(
                         imageVector = CaretLeftIcon,
                         contentDescription = "Back",
                         tint = Color(colors.primary),
-                        size = 20.dp
+                        size = 18.dp
+                    )
+                    Text(
+                        text = navigator.previousTitle ?: "Back",
+                        role = TextRole.BodyMedium,
+                        color = Color(colors.primary)
                     )
                 }
             }
