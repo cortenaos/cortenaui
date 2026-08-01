@@ -6,16 +6,18 @@ package app.cortena.ui.catalog
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.cortena.ui.catalog.demo.ButtonDemo
 import app.cortena.ui.catalog.demo.ColorDemo
@@ -28,7 +30,6 @@ import app.cortena.ui.catalog.demo.ScrollViewDemo
 import app.cortena.ui.catalog.demo.SliderDemo
 import app.cortena.ui.catalog.demo.ToggleDemo
 import app.cortena.ui.catalog.demo.TypographyDemo
-import framework.cortena.ui.components.Separator
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
@@ -38,74 +39,78 @@ import framework.cortena.ui.layout.SafeArea
 import framework.cortena.ui.layout.ScrollView
 import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.ThemeMode
+import framework.cortena.ui.typography.TextWeight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val themeMode = mutableStateOf(ThemeMode.Auto)
+        var currentPage by mutableStateOf<String?>(null)
 
-        ContentView(
-            themeMode = { themeMode.value }
-            // Example for use custom FontFamily.
-            // fontFamily = FontFamily(Font(R.font.jetbrainsnerdfont_regular))
-        ) {
+        ContentView(themeMode = { themeMode.value }) {
             Body {
+                // Handle system back press
+                BackHandler(enabled = currentPage != null) { currentPage = null }
+
                 ScrollView {
                     SafeArea {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            val colors = LocalColors.current
-                            Text(
-                                "Theme",
-                                color = Color(colors.primary),
-                                role = TextRole.TitleMedium,
-                            )
-                            val isSystemDark = isSystemInDarkTheme()
-                            val isDark =
-                                when (themeMode.value) {
-                                    ThemeMode.Light -> false
-                                    ThemeMode.Dark -> true
-                                    ThemeMode.Auto -> isSystemDark
-                                }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
+                        if (currentPage == null) {
+                            // Main menu
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             ) {
-                                Text("Dark Mode")
-                                Toggle(
-                                    checked = isDark,
-                                    onCheckedChange = {
-                                        themeMode.value =
-                                            if (isDark) ThemeMode.Light else ThemeMode.Dark
-                                    },
+                                // Header
+                                Text(
+                                    "CortenaUI Catalog",
+                                    role = TextRole.TitleLarge,
+                                    weight = TextWeight.Medium,
+                                    modifier = Modifier.padding(vertical = 8.dp),
                                 )
+
+                                // Dark mode toggle
+                                val colors = LocalColors.current
+                                val isSystemDark = isSystemInDarkTheme()
+                                val isDark =
+                                    when (themeMode.value) {
+                                        ThemeMode.Light -> false
+                                        ThemeMode.Dark -> true
+                                        ThemeMode.Auto -> isSystemDark
+                                    }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text("Dark Mode", role = TextRole.BodyMedium)
+                                    Toggle(
+                                        checked = isDark,
+                                        onCheckedChange = {
+                                            themeMode.value =
+                                                if (isDark) ThemeMode.Light else ThemeMode.Dark
+                                        },
+                                    )
+                                }
+
+                                CatalogMenu(onNavigate = { currentPage = it })
                             }
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            TypographyDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            ButtonDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            IconDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            SliderDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            ToggleDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            ScrollViewDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            LazyScrollViewDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            ListViewDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            GridViewDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            LazyGridViewDemo()
-                            Separator(modifier = Modifier.padding(vertical = 12.dp))
-                            ColorDemo()
+                        } else {
+                            // Demo page
+                            DemoPage(onBack = { currentPage = null }) {
+                                when (currentPage) {
+                                    "Button" -> ButtonDemo()
+                                    "Icon" -> IconDemo()
+                                    "Slider" -> SliderDemo()
+                                    "Toggle" -> ToggleDemo()
+                                    "ListView" -> ListViewDemo()
+                                    "ScrollView" -> ScrollViewDemo()
+                                    "LazyScrollView" -> LazyScrollViewDemo()
+                                    "GridView" -> GridViewDemo()
+                                    "LazyGridView" -> LazyGridViewDemo()
+                                    "Typography" -> TypographyDemo()
+                                    "Colors" -> ColorDemo()
+                                }
+                            }
                         }
                     }
                 }
