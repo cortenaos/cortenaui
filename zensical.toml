@@ -48,26 +48,12 @@ repo_name = "cortenaui/cortenaui"
 #
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
-  {
-    "Overview" = [ 
-      "index.md", 
-      "GETTING-STARTED.md", 
-      "INSTALLATION.md",
-      "ARCHITECTURE.md"
-    ]
-  },
-  {
-    "Components" = [
+  { "Overview" = [ "index.md", "GETTING-STARTED.md", "INSTALLATION.md", "ARCHITECTURE.md" ] }, 
+  { "Components" = [ 
       { "Layout" = [ "layout/ContentView.md", "layout/Theme.md", "layout/Body.md", "layout/SafeArea.md", "layout/ScrollView.md", "layout/LazyScrollView.md", "layout/GridView.md", "layout/LazyGridView.md" ] },
-      { "Component" = [ "components/AppBar.md", "components/Button.md", "components/Icon.md", "components/Separator.md", "components/Slider.md", "components/Text.md", "components/Toggle.md" ] },
-      { "Extra" = [ "extra/Motion.md", "extra/Shape.md" ] },
-    ]
-  },
-  {
-    "Contributing" = [
-      "PUBLISHING.md"
-    ]
-  }
+      { "Component" = [ "components/AppBar.md", "components/Button.md", "components/Icon.md", "components/ListItem.md", "components/ListView.md", "components/Separator.md", "components/Slider.md", "components/Text.md", "components/Toggle.md" ] },
+      { "Extra" = [ "extra/Motion.md", "extra/Shape.md" ] }] }, 
+  { "Contributing" = [ "PUBLISHING.md" ] }
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

@@ -187,6 +187,8 @@ Components — `docs/components/`:
 - [AppBar](components/AppBar.md)
 - [Button](components/Button.md)
 - [Icon](components/Icon.md)
+- [ListItem](components/ListItem.md)
+- [ListView](components/ListView.md)
 - [Separator](components/Separator.md)
 - [Slider](components/Slider.md)
 - [Text](components/Text.md)
