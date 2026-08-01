@@ -11,7 +11,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -19,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.cortena.ui.catalog.demo.ButtonDemo
 import app.cortena.ui.catalog.demo.ColorDemo
@@ -40,6 +43,7 @@ import framework.cortena.ui.layout.SafeArea
 import framework.cortena.ui.layout.ScrollView
 import framework.cortena.ui.navigation.LocalNavigator
 import framework.cortena.ui.navigation.Navigator
+import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.ThemeMode
 import framework.cortena.ui.typography.TextWeight
 
@@ -81,12 +85,15 @@ class MainActivity : ComponentActivity() {
                                 Column(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                                 ) {
+                                    val colors = LocalColors.current
+
                                     // Header
                                     Text(
                                         "CortenaUI Catalog",
                                         role = TextRole.TitleLarge,
                                         weight = TextWeight.Medium,
-                                        modifier = Modifier.padding(vertical = 8.dp),
+                                        modifier = Modifier.padding(vertical = 4.dp),
+                                        color = Color(colors.primary)
                                     )
 
                                     // Dark mode toggle
@@ -111,6 +118,8 @@ class MainActivity : ComponentActivity() {
                                             },
                                         )
                                     }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
 
                                     CatalogMenu(onNavigate = { currentPage = it })
                                 }
