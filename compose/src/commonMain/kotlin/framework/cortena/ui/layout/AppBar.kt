@@ -27,15 +27,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.annotation.ExperimentalComponentsApi
+import framework.cortena.ui.color.ColorToken
 import framework.cortena.ui.components.Button
-import framework.cortena.ui.components.ButtonStyle
-import framework.cortena.ui.components.ButtonVariant
 import framework.cortena.ui.components.Icon
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.navigation.LocalNavigator
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
+import framework.cortena.ui.theme.LocalIsDark
+import framework.cortena.ui.theme.value
 import framework.cortena.ui.typography.TextWeight
 
 internal val APP_BAR_HEIGHT_DEFAULT = 56.dp
@@ -131,22 +132,21 @@ fun AppBar(
                     verticalAlignment = UiAlignment.CenterVertically
                 ) {
                     if (navigator?.canGoBack == true) {
+                        val isDark = LocalIsDark.current
                         Button(
                             onClick = { navigator.pop() },
-                            variant = ButtonVariant.Soft,
-                            style = ButtonStyle.Primary,
+                            background = if (isDark) ColorToken.Gray900.value() else ColorToken.Gray100.value(),
+                            foreground = Color(colors.primary),
                             size = SizeToken.Small,
                         ) {
                             Icon(
                                 imageVector = CaretLeftIcon,
                                 contentDescription = "Back",
-                                tint = Color(colors.primary),
-                                size = 18.dp
+                                size = 16.dp
                             )
                             Text(
                                 text = navigator.previousTitle ?: "Back",
                                 role = TextRole.BodyMedium,
-                                color = Color(colors.primary)
                             )
                         }
                     }

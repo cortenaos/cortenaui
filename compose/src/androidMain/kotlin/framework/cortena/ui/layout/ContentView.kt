@@ -99,7 +99,7 @@ fun ComponentActivity.ContentView(
 
             val appBarSlot = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
             val isAppBarVisible = appBar != null || appBarSlot.value != null
-            val appBarPadding = if (isAppBarVisible) APP_BAR_HEIGHT_DEFAULT else 0.dp
+            val appBarPadding = if (isAppBarVisible) APP_BAR_HEIGHT_DEFAULT + 16.dp else 0.dp
 
             CompositionLocalProvider(
                 LocalAppBarSlot provides appBarSlot,
