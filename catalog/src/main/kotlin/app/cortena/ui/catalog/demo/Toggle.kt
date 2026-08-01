@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
@@ -25,7 +24,6 @@ import framework.cortena.ui.theme.LocalColors
 @Composable
 fun ToggleDemo() {
     val colors = LocalColors.current
-    Text("Toggle", color = Color(colors.primary), role = TextRole.TitleMedium)
     var defaultChecked by remember { mutableStateOf(true) }
     Row(
         modifier = Modifier.fillMaxWidth(),

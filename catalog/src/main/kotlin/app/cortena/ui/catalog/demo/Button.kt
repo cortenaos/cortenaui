@@ -24,16 +24,12 @@ import framework.cortena.ui.components.ButtonStyle
 import framework.cortena.ui.components.ButtonVariant
 import framework.cortena.ui.components.Icon
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
 import framework.cortena.ui.size.SizeToken
-import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.value
 
 @Composable
 fun ButtonDemo() {
-    val colors = LocalColors.current
-    Text("Button", color = Color(colors.primary), role = TextRole.TitleMedium)
     var enable by remember { mutableStateOf(true) }
     Row(
         modifier = Modifier.fillMaxWidth(),

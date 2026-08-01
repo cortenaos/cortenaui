@@ -14,23 +14,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import framework.cortena.icons.PhosphorIcon
 import framework.cortena.icons.PhosphorIcons
 import framework.cortena.ui.color.ColorToken
 import framework.cortena.ui.components.Icon
 import framework.cortena.ui.components.Text
-import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
-import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.value
 
 @Composable
 fun IconDemo() {
-    val colors = LocalColors.current
-    Text("Icon", color = Color(colors.primary), role = TextRole.TitleMedium)
-
     var enabled by remember { mutableStateOf(true) }
     Row(
         modifier = Modifier.fillMaxWidth(),

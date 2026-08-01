@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -37,7 +38,8 @@ import framework.cortena.ui.layout.Body
 import framework.cortena.ui.layout.ContentView
 import framework.cortena.ui.layout.SafeArea
 import framework.cortena.ui.layout.ScrollView
-import framework.cortena.ui.theme.LocalColors
+import framework.cortena.ui.navigation.LocalNavigator
+import framework.cortena.ui.navigation.Navigator
 import framework.cortena.ui.theme.ThemeMode
 import framework.cortena.ui.typography.TextWeight
 
@@ -46,73 +48,85 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val themeMode = mutableStateOf(ThemeMode.Auto)
-        var currentPage by mutableStateOf<String?>(null)
+        val pageState = mutableStateOf<String?>(null)
+        var currentPage by pageState
+
+        val navigator =
+            object : Navigator {
+                override val canGoBack: Boolean
+                    get() = pageState.value != null
+
+                override fun pop() {
+                    pageState.value = null
+                }
+            }
 
         ContentView(
             themeMode = { themeMode.value },
             // Example for use custom FontFamily.
             // fontFamily = FontFamily(Font(R.font.jetbrainsnerdfont_regular))
         ) {
-            Body {
-                // Handle system back press
-                BackHandler(enabled = currentPage != null) { currentPage = null }
+            CompositionLocalProvider(LocalNavigator provides navigator) {
+                Body {
+                    // Handle system back press
+                    BackHandler(enabled = currentPage != null) { navigator.pop() }
 
-                ScrollView {
-                    SafeArea {
-                        if (currentPage == null) {
-                            // Main menu
-                            Column(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            ) {
-                                // Header
-                                Text(
-                                    "CortenaUI Catalog",
-                                    role = TextRole.TitleLarge,
-                                    weight = TextWeight.Medium,
-                                    modifier = Modifier.padding(vertical = 8.dp),
-                                )
-
-                                // Dark mode toggle
-                                val colors = LocalColors.current
-                                val isSystemDark = isSystemInDarkTheme()
-                                val isDark =
-                                    when (themeMode.value) {
-                                        ThemeMode.Light -> false
-                                        ThemeMode.Dark -> true
-                                        ThemeMode.Auto -> isSystemDark
-                                    }
-                                Row(
+                    ScrollView {
+                        SafeArea {
+                            if (currentPage == null) {
+                                // Main menu
+                                Column(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text("Dark Mode", role = TextRole.BodyMedium)
-                                    Toggle(
-                                        checked = isDark,
-                                        onCheckedChange = {
-                                            themeMode.value =
-                                                if (isDark) ThemeMode.Light else ThemeMode.Dark
-                                        },
+                                    // Header
+                                    Text(
+                                        "CortenaUI Catalog",
+                                        role = TextRole.TitleLarge,
+                                        weight = TextWeight.Medium,
+                                        modifier = Modifier.padding(vertical = 8.dp),
                                     )
-                                }
 
-                                CatalogMenu(onNavigate = { currentPage = it })
-                            }
-                        } else {
-                            // Demo page
-                            DemoPage(onBack = { currentPage = null }) {
-                                when (currentPage) {
-                                    "Button" -> ButtonDemo()
-                                    "Icon" -> IconDemo()
-                                    "Slider" -> SliderDemo()
-                                    "Toggle" -> ToggleDemo()
-                                    "ListView" -> ListViewDemo()
-                                    "ScrollView" -> ScrollViewDemo()
-                                    "LazyScrollView" -> LazyScrollViewDemo()
-                                    "GridView" -> GridViewDemo()
-                                    "LazyGridView" -> LazyGridViewDemo()
-                                    "Typography" -> TypographyDemo()
-                                    "Colors" -> ColorDemo()
+                                    // Dark mode toggle
+                                    val isSystemDark = isSystemInDarkTheme()
+                                    val isDark =
+                                        when (themeMode.value) {
+                                            ThemeMode.Light -> false
+                                            ThemeMode.Dark -> true
+                                            ThemeMode.Auto -> isSystemDark
+                                        }
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Text("Dark Mode", role = TextRole.BodyMedium)
+                                        Toggle(
+                                            checked = isDark,
+                                            onCheckedChange = {
+                                                themeMode.value =
+                                                    if (isDark) ThemeMode.Light else ThemeMode.Dark
+                                            },
+                                        )
+                                    }
+
+                                    CatalogMenu(onNavigate = { currentPage = it })
+                                }
+                            } else {
+                                // Demo page
+                                DemoPage(title = currentPage!!) {
+                                    when (currentPage) {
+                                        "Button" -> ButtonDemo()
+                                        "Icon" -> IconDemo()
+                                        "Slider" -> SliderDemo()
+                                        "Toggle" -> ToggleDemo()
+                                        "ListView" -> ListViewDemo()
+                                        "ScrollView" -> ScrollViewDemo()
+                                        "LazyScrollView" -> LazyScrollViewDemo()
+                                        "GridView" -> GridViewDemo()
+                                        "LazyGridView" -> LazyGridViewDemo()
+                                        "Typography" -> TypographyDemo()
+                                        "Colors" -> ColorDemo()
+                                    }
                                 }
                             }
                         }

@@ -34,7 +34,6 @@ import framework.cortena.ui.theme.LocalColors
 @Composable
 fun TypographyDemo() {
     val colors = LocalColors.current
-    Text("Typography", color = Color(colors.primary), role = TextRole.TitleMedium)
     var italic by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
