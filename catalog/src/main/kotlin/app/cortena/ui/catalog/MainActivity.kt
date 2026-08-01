@@ -48,7 +48,11 @@ class MainActivity : ComponentActivity() {
         val themeMode = mutableStateOf(ThemeMode.Auto)
         var currentPage by mutableStateOf<String?>(null)
 
-        ContentView(themeMode = { themeMode.value }) {
+        ContentView(
+            themeMode = { themeMode.value },
+            // Example for use custom FontFamily.
+            // fontFamily = FontFamily(Font(R.font.jetbrainsnerdfont_regular))
+        ) {
             Body {
                 // Handle system back press
                 BackHandler(enabled = currentPage != null) { currentPage = null }
