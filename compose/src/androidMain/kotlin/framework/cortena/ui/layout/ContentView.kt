@@ -39,12 +39,12 @@ import framework.cortena.ui.typography.DefaultTypography
 import framework.cortena.ui.typography.Typography
 
 fun ComponentActivity.ContentView(
-    // Parameters that can change at runtime ? lambda
+    // Parameters that can change at runtime → lambda
     themeMode: () -> ThemeMode = { ThemeMode.Auto },
     statusBarIconMode: () -> StatusBarIconMode = { StatusBarIconMode.Auto },
     statusBarColor: () -> Color = { Color.Transparent },
 
-    // Parameters that do not change at runtime ? regular values
+    // Parameters that do not change at runtime → regular values
     palette: Palette? = null,
     typography: Typography = DefaultTypography,
     fontFamily: FontFamily? = null,
@@ -62,7 +62,7 @@ fun ComponentActivity.ContentView(
     enableEdgeToEdge()
 
     setContent {
-        // All resolves within setContent � reactive to recompose
+        // All resolves within setContent — reactive to recompose
         val currentThemeMode = themeMode()
         val currentStatusBarColor = statusBarColor()
         val currentStatusBarIconMode = statusBarIconMode()
