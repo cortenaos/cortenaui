@@ -20,12 +20,9 @@ import framework.cortena.ui.components.ListItem
 import framework.cortena.ui.components.ListView
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
-import framework.cortena.ui.theme.LocalColors
 
 @Composable
 fun ListViewDemo() {
-    val colors = LocalColors.current
-    Text("ListView", color = Color(colors.primary), role = TextRole.TitleMedium)
     Column {
         ListView(title = "FANCY") {
             val fancyColors =

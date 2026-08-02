@@ -28,13 +28,9 @@ import framework.cortena.ui.typography.TextWeight
 @Composable
 fun GridViewDemo() {
     val colors = LocalColors.current
-    Text("GridView", color = Color(colors.primary), role = TextRole.TitleMedium)
-    Text(
-        "Eager 2D grid - all cells composed upfront. Use for small fixed grids.",
-        role = TextRole.BodySmall,
-    )
+    Text("Eager 2D grid - all cells composed upfront. Use for small fixed grids.")
     val labels = (1..18).map { "$it" }
-    Text("Fixed (3 columns)", role = TextRole.BodySmall, weight = TextWeight.Medium)
+    Text("Fixed (3 columns)", weight = TextWeight.Medium)
     GridView(
         items = labels,
         columns = GridColumns.Fixed(3),
@@ -62,7 +58,7 @@ fun GridViewDemo() {
             )
         }
     }
-    Text("Adaptive (min 96.dp per cell)", role = TextRole.BodySmall, weight = TextWeight.Medium)
+    Text("Adaptive (min 96.dp per cell)", weight = TextWeight.Medium)
     GridView(
         items = (1..24).map { "$it" },
         columns = GridColumns.Adaptive(minSize = 96.dp),
@@ -90,11 +86,7 @@ fun GridViewDemo() {
             )
         }
     }
-    Text(
-        "Horizontal (rows scroll, 2 rows of cells)",
-        role = TextRole.BodySmall,
-        weight = TextWeight.Medium,
-    )
+    Text("Horizontal (rows scroll, 2 rows of cells)", weight = TextWeight.Medium)
     GridView(
         items = labels,
         columns = GridColumns.Fixed(2),

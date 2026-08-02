@@ -11,20 +11,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import framework.cortena.ui.color.Palette
 import framework.cortena.ui.size.SizeToken
@@ -83,7 +86,6 @@ fun ComponentActivity.ContentView(
                             }
                         referenceColor.luminance() > 0.5f
                     }
-
                     StatusBarIconMode.Light -> false
                     StatusBarIconMode.Dark -> true
                 }
@@ -95,20 +97,35 @@ fun ComponentActivity.ContentView(
                     useDarkIcons
             }
 
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column {
-                    appBar?.invoke()
-                    content()
-                }
-                if (currentStatusBarColor != Color.Transparent) {
-                    val statusBarHeight =
-                        with(LocalDensity.current) { WindowInsets.statusBars.getTop(this).toDp() }
-                    Box(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .height(statusBarHeight)
-                                .background(currentStatusBarColor)
-                    )
+            val appBarSlot = remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+            val isAppBarVisible = appBar != null || appBarSlot.value != null
+            val appBarPadding = if (isAppBarVisible) APP_BAR_HEIGHT_DEFAULT + 16.dp else 0.dp
+
+            CompositionLocalProvider(
+                LocalAppBarSlot provides appBarSlot,
+                LocalAppBarPadding provides appBarPadding
+            ) {
+                Box(modifier = Modifier.fillMaxSize().background(Color(colors.surface))) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        content()
+                        if (appBar != null) {
+                            appBar.invoke()
+                        } else {
+                            appBarSlot.value?.invoke()
+                        }
+                    }
+                    if (currentStatusBarColor != Color.Transparent) {
+                        val statusBarHeight =
+                            with(LocalDensity.current) {
+                                WindowInsets.statusBars.getTop(this).toDp()
+                            }
+                        Box(
+                            modifier =
+                                Modifier.fillMaxWidth()
+                                    .height(statusBarHeight)
+                                    .background(currentStatusBarColor)
+                        )
+                    }
                 }
             }
         }

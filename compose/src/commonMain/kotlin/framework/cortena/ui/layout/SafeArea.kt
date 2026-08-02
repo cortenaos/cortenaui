@@ -16,11 +16,14 @@ fun SafeArea(
     verticalPadding: Dp = LocalSpacing.current.None.dp, // default: 0dp
     content: @Composable () -> Unit,
 ) {
+    val appBarPadding = framework.cortena.ui.layout.LocalAppBarPadding.current
+
     Box(
         modifier =
             modifier
                 .safeDrawingPadding()
                 .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+                .padding(top = appBarPadding)
     ) {
         content()
     }

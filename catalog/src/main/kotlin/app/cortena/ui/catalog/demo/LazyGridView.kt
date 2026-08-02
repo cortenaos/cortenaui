@@ -30,16 +30,8 @@ import framework.cortena.ui.typography.TextWeight
 @Composable
 fun LazyGridViewDemo() {
     val colors = LocalColors.current
-    Text("LazyGridView", color = Color(colors.primary), role = TextRole.TitleMedium)
-    Text(
-        "Lazy 2D grid - only cells in the viewport are composed. Use for large grids.",
-        role = TextRole.BodySmall,
-    )
-    Text(
-        "Adaptive (min 80.dp per cell), 200 items",
-        role = TextRole.BodySmall,
-        weight = TextWeight.Medium,
-    )
+    Text("Lazy 2D grid - only cells in the viewport are composed. Use for large grids.")
+    Text("Adaptive (min 80.dp per cell), 200 items", weight = TextWeight.Medium)
     LazyGridView(
         columns = GridColumns.Adaptive(minSize = 80.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -68,11 +60,7 @@ fun LazyGridViewDemo() {
             }
         }
     }
-    Text(
-        "Horizontal lazy grid (Fixed 3 rows, 201 items)",
-        role = TextRole.BodySmall,
-        weight = TextWeight.Medium,
-    )
+    Text("Horizontal lazy grid (Fixed 3 rows, 201 items)", weight = TextWeight.Medium)
     LazyGridView(
         columns = GridColumns.Fixed(3),
         orientation = Orientation.Horizontal,

@@ -16,19 +16,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import framework.cortena.ui.components.Slider
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
 import framework.cortena.ui.size.SizeToken
-import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.typography.TextWeight
 
 @Composable
 fun SliderDemo() {
-    val colors = LocalColors.current
-    Text("Slider", color = Color(colors.primary), role = TextRole.TitleMedium)
     var enable by remember { mutableStateOf(true) }
     Row(
         modifier = Modifier.fillMaxWidth(),

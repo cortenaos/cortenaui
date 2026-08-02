@@ -12,18 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import framework.cortena.ui.color.ColorToken
-import framework.cortena.ui.components.Text
-import framework.cortena.ui.components.TextRole
-import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.value
 
 @Composable
 fun ColorDemo() {
-    val colors = LocalColors.current
-    Text("Colors", color = Color(colors.primary), role = TextRole.TitleMedium)
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         for (i in
             arrayOf(

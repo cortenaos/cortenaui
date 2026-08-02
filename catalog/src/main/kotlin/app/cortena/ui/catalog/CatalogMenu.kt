@@ -22,8 +22,6 @@ import framework.cortena.ui.theme.LocalColors
 
 @Composable
 fun CatalogMenu(onNavigate: (String) -> Unit) {
-    val colors = LocalColors.current
-
     ListView(title = "Components") {
         catalogMenuItem("Button", onNavigate)
         catalogMenuItem("Icon", onNavigate)
@@ -32,7 +30,7 @@ fun CatalogMenu(onNavigate: (String) -> Unit) {
         catalogMenuItem("ListView", onNavigate)
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
     ListView(title = "Layout") {
         catalogMenuItem("ScrollView", onNavigate)
@@ -41,7 +39,7 @@ fun CatalogMenu(onNavigate: (String) -> Unit) {
         catalogMenuItem("LazyGridView", onNavigate)
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
     ListView(title = "Theme") {
         catalogMenuItem("Typography", onNavigate)
