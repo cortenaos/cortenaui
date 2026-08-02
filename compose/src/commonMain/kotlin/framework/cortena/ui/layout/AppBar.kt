@@ -4,14 +4,17 @@
  */
 package framework.cortena.ui.layout
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -21,23 +24,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment as UiAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import framework.cortena.ui.annotation.ExperimentalComponentsApi
 import framework.cortena.ui.color.ColorToken
 import framework.cortena.ui.components.Button
 import framework.cortena.ui.components.Icon
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
+import framework.cortena.ui.geometry.Alignment
 import framework.cortena.ui.navigation.LocalNavigator
 import framework.cortena.ui.size.SizeToken
 import framework.cortena.ui.theme.LocalColors
 import framework.cortena.ui.theme.LocalIsDark
 import framework.cortena.ui.theme.value
-import framework.cortena.ui.typography.TextWeight
 
 internal val APP_BAR_HEIGHT_DEFAULT = 56.dp
 
@@ -95,16 +98,29 @@ private val CaretLeftIcon: ImageVector
             }
             .build()
 
-@ExperimentalComponentsApi
 @Composable
 fun AppBar(
     modifier: Modifier = Modifier,
-    title: String? = null,
+    title: (@Composable () -> Unit)? = null,
+    titleAlignment: Alignment? = null,
+    leading: (@Composable () -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null,
+    background: Brush? = null,
     content: @Composable () -> Unit = {}
 ) {
     val navigator = LocalNavigator.current
     val colors = LocalColors.current
     val slot = LocalAppBarSlot.current
+
+    val canGoBack = navigator?.canGoBack == true
+    val hasLeading = leading != null || canGoBack
+    val resolvedTitleAlignment =
+        titleAlignment ?: if (hasLeading) Alignment.Center else Alignment.Start
+    val resolvedBackground =
+        background
+            ?: Brush.verticalGradient(
+                colors = listOf(Color(colors.surface).copy(alpha = 0.9f), Color.Transparent)
+            )
 
     val appBarContent =
         @Composable {
@@ -112,30 +128,35 @@ fun AppBar(
                 modifier =
                     modifier
                         .fillMaxWidth()
+                        .background(resolvedBackground)
                         .windowInsetsPadding(WindowInsets.statusBars)
                         .heightIn(min = APP_BAR_HEIGHT_DEFAULT)
                         .padding(horizontal = 16.dp),
-                contentAlignment = UiAlignment.Center
             ) {
-                // Title centered
-                if (title != null) {
-                    Text(
-                        text = title,
-                        role = TextRole.TitleMedium,
-                        weight = TextWeight.Medium,
-                    )
+                // Center Title
+                if (title != null && resolvedTitleAlignment == Alignment.Center) {
+                    Box(
+                        modifier = Modifier.matchParentSize(),
+                        contentAlignment = UiAlignment.Center
+                    ) {
+                        title()
+                    }
                 }
 
-                // Leading content (Back Button)
+                // Row for Start/End
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.matchParentSize(),
                     verticalAlignment = UiAlignment.CenterVertically
                 ) {
-                    if (navigator?.canGoBack == true) {
+                    if (leading != null) {
+                        leading()
+                    } else if (canGoBack) {
                         val isDark = LocalIsDark.current
                         Button(
                             onClick = { navigator.pop() },
-                            background = if (isDark) ColorToken.Gray900.value() else ColorToken.Gray100.value(),
+                            background =
+                                if (isDark) ColorToken.Gray900.value()
+                                else ColorToken.Gray100.value(),
                             foreground = Color(colors.primary),
                             size = SizeToken.Small,
                         ) {
@@ -150,7 +171,23 @@ fun AppBar(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.weight(1f))
+
+                    if (title != null && resolvedTitleAlignment != Alignment.Center) {
+                        if (hasLeading) Spacer(modifier = Modifier.width(16.dp))
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = if (resolvedTitleAlignment == Alignment.Start) UiAlignment.CenterStart else UiAlignment.CenterEnd
+                        ) {
+                            title()
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+
+                    if (trailing != null) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        trailing()
+                    }
                 }
 
                 // Custom content, filling the same space if needed

@@ -8,12 +8,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -38,10 +35,10 @@ import app.cortena.ui.catalog.demo.ScrollViewDemo
 import app.cortena.ui.catalog.demo.SliderDemo
 import app.cortena.ui.catalog.demo.ToggleDemo
 import app.cortena.ui.catalog.demo.TypographyDemo
-import framework.cortena.ui.annotation.ExperimentalComponentsApi
 import framework.cortena.ui.components.Text
 import framework.cortena.ui.components.TextRole
 import framework.cortena.ui.components.Toggle
+import framework.cortena.ui.layout.AppBar
 import framework.cortena.ui.layout.Body
 import framework.cortena.ui.layout.ContentView
 import framework.cortena.ui.layout.SafeArea
@@ -53,7 +50,6 @@ import framework.cortena.ui.theme.ThemeMode
 import framework.cortena.ui.typography.TextWeight
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalComponentsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,15 +101,6 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     val colors = LocalColors.current
 
-                                    // Header
-                                    Text(
-                                        "CortenaUI Catalog",
-                                        role = TextRole.TitleLarge,
-                                        weight = TextWeight.Medium,
-                                        modifier = Modifier.padding(vertical = 4.dp),
-                                        color = Color(colors.primary)
-                                    )
-
                                     // Dark mode toggle
                                     val isSystemDark = isSystemInDarkTheme()
                                     val isDark =
@@ -122,22 +109,29 @@ class MainActivity : ComponentActivity() {
                                             ThemeMode.Dark -> true
                                             ThemeMode.Auto -> isSystemDark
                                         }
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Text("Dark Mode", role = TextRole.BodyMedium)
-                                        Toggle(
-                                            checked = isDark,
-                                            onCheckedChange = {
-                                                themeMode.value =
-                                                    if (isDark) ThemeMode.Light else ThemeMode.Dark
-                                            },
-                                        )
-                                    }
 
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    AppBar(
+                                        title = {
+                                            Text(
+                                                "CortenaUI Catalog",
+                                                role = TextRole.TitleLarge,
+                                                weight = TextWeight.Medium,
+                                                color = Color(colors.primary)
+                                            )
+                                        },
+                                        trailing = {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text("Dark Mode", role = TextRole.BodyMedium, modifier = Modifier.padding(end = 8.dp))
+                                                Toggle(
+                                                    checked = isDark,
+                                                    onCheckedChange = {
+                                                        themeMode.value =
+                                                            if (isDark) ThemeMode.Light else ThemeMode.Dark
+                                                    },
+                                                )
+                                            }
+                                        }
+                                    )
 
                                     CatalogMenu(onNavigate = { currentPage = it })
                                 }
